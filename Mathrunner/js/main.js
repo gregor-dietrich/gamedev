@@ -16,8 +16,8 @@ var musicConfig = {
 var config;
 window.onload = function() {
     config = {
-        width: 256,
-        height: 292,
+        width: 700,
+        height: 300,
         backgroundColor: 0x333333,
         pixelArt: true,
         type: Phaser.AUTO,
