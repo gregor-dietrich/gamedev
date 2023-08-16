@@ -1,4 +1,4 @@
-RELEASE: bool = False
+RELEASE: bool = True
 DEBUG: bool = True
 
 import os
