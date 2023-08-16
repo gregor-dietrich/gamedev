@@ -1,5 +1,5 @@
 PROJECTROOT: str = "Mathrunner"
-LAUNCH: bool = True
+LAUNCH: bool = False
 PACKAGE: bool = False
 
 import os
