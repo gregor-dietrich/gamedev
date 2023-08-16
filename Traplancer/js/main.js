@@ -7,7 +7,7 @@ var config;
 window.onload = function() {
     config = {
         width: 256,
-        height: 272,
+        height: 292,
         backgroundColor: 0x333333,
         pixelArt: true,
         type: Phaser.AUTO,

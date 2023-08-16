@@ -5,6 +5,7 @@ class Scene1 extends Phaser.Scene {
 
     preload() {
         this.load.image("background", "assets/images/background.png");
+        this.load.bitmapFont("pixelFont", "assets/font/font.png", "assets/font/font.xml");
         this.load.spritesheet("player", "assets/spritesheets/player.png",{
             frameWidth: 16,
             frameHeight: 24

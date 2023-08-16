@@ -31,7 +31,7 @@ class Scene2 extends Phaser.Scene {
             ship.play("ship" + (i+1) + "_anim");
         }
 
-        this.player = this.physics.add.sprite(config.width/2 - 8, config.height - 64, "player");
+        this.player = this.physics.add.sprite(config.width/2 - 8, config.height - 32, "player");
         this.player.play("thrust");
         this.player.setCollideWorldBounds(true);
         this.cursorKeys = this.input.keyboard.createCursorKeys();
@@ -44,7 +44,7 @@ class Scene2 extends Phaser.Scene {
         }
         this.input.on('gameobjectdown', this.destroyShip, this);
 
-        for (var i = 0; i < 4; i++) {
+        for (var i = 0; i < 3; i++) {
             var powerUp = this.physics.add.sprite(16, 16, "powerup");
             this.powerUps.add(powerUp);
             powerUp.setRandomPosition(0, 0, config.width, config.height);
@@ -60,7 +60,6 @@ class Scene2 extends Phaser.Scene {
             powerUp.setBounce(1);
         }
 
-
         this.physics.add.collider(this.powerUps, this.powerUps);
         this.physics.add.collider(this.projectiles, this.powerUps, function(projectile, powerUp) {
             projectile.destroy();
@@ -68,6 +67,20 @@ class Scene2 extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.powerUps, this.pickPowerUp, null, this);
         this.physics.add.overlap(this.player, this.enemies, this.hurtPlayer, null, this);
         this.physics.add.overlap(this.projectiles, this.enemies, this.hitEnemy, null, this);
+
+        var graphics = this.add.graphics();
+        graphics.fillStyle(0x000000, 1);
+        graphics.beginPath();
+        graphics.moveTo(0,0);
+        graphics.lineTo(config.width, 0);
+        graphics.lineTo(config.width, 20);
+        graphics.lineTo(0, 20);
+        graphics.lineTo(0, 0);
+        graphics.closePath();
+        graphics.fillPath();
+
+        this.score = 0;
+        this.scoreLabel = this.add.bitmapText(10, 5, "pixelFont", "SCORE: 000000", 16);
     }
 
     update() {
@@ -91,15 +104,64 @@ class Scene2 extends Phaser.Scene {
         }
     }
 
+    zeroPad(number, size) {
+        var stringNumber = String(number);
+        while(stringNumber.length < (size || 2)) {
+            stringNumber = "0" + stringNumber;
+        }
+        return stringNumber;
+    }
+
     hitEnemy(projectile, enemy) {
+        var explosion = new Explosion(this, enemy.x, enemy.y);
         projectile.destroy();
         this.resetShipPos(enemy);
+        this.score += 25;
+        this.scoreLabel.text = "SCORE: " + this.zeroPad(this.score, 6);
     }
 
     hurtPlayer(player, enemy) {
+        if (this.player.alpha < 1) {
+            return;
+        }
+
+        var explosion_enemy = new Explosion(this, enemy.x, enemy.y);
         this.resetShipPos(enemy);
-        player.x = config.width / 2 - 8;
-        player.y = config.height - 64;
+        
+        var exlposion_player = new Explosion(this, player.x, player.y);
+        player.disableBody(true, true);
+
+        this.time.addEvent({
+            delay: 5000,
+            callback: this.resetPlayer,
+            callbackScope: this,
+            loop: false
+        });
+    }
+
+    resetPlayer() {
+        this.score = 0;
+        this.scoreLabel.text = "SCORE: 000000";
+        var x = config.width / 2 - 8;
+        var y = config.height;
+        this.player.enableBody(true, x, y, true, true);
+        for (var i = 0; i < this.enemies.getChildren().length; i++) {
+            var ship = this.enemies.getChildren()[i];
+            this.resetShipPos(ship);
+        }
+
+        this.player.alpha = 0.5;
+        var tween = this.tweens.add({
+            targets: this.player,
+            y: config.height - 64,
+            ease: "Power1",
+            duration: 1500,
+            repeat: 0,
+            onComplete: function() {
+                this.player.alpha = 1;
+            },
+            callbackScope: this
+        });
     }
 
     pickPowerUp(player, powerUp) {
@@ -107,7 +169,7 @@ class Scene2 extends Phaser.Scene {
     }
 
     shootBeam() {
-        if (this.projectiles.getChildren().length > 3) {
+        if (!this.player.active || this.player.alpha < 1 || this.projectiles.getChildren().length > 9) {
             return;
         }
         // var beam = this.physics.add.sprite(this.player.x, this.player.y, "beam");
