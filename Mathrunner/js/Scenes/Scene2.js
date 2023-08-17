@@ -4,11 +4,21 @@ class Scene2 extends Phaser.Scene {
     }
 
     create() {
-        // this.background = this.add.image(0,0, "background");
+        this.background = this.add.tileSprite(0, 0, config.width, config.height, 'background');
+        this.middleground = this.add.tileSprite(0, 120, config.width, config.height, 'middleground');        
+        this.setTileSpriteRepeating(this.background);
+        this.setTileSpriteRepeating(this.middleground);
+    }
 
-        this.add.text(20, 20, "Playing game", {
-            font: "25px Arial",
-            fill: "yellow"
-        });
+    update() {
+        this.background.tilePositionX += gameSettings.playerSpeed;
+        this.middleground.tilePositionX += gameSettings.playerSpeed * 2;
+
+        // this.player.body.velocity.y = -170;
+    }
+
+    setTileSpriteRepeating(tilesprite) {
+        tilesprite.fixedToCamera = true;
+        tilesprite.setOrigin(0, 0);
     }
 }

@@ -1,5 +1,5 @@
 var gameSettings = {
-    playerSpeed: 200,
+    playerSpeed: 2,
     fps: 20
 }
 
