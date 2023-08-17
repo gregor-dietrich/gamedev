@@ -48,7 +48,7 @@ class Scene3 extends Phaser.Scene {
 
         // Enable physics on the player
         this.physics.world.enable(this.player);
-        this.player.body.gravity.y = 500;
+        //this.player.body.gravity.y = 500;
 
         // Player intro animation
         this.tweens.add({
