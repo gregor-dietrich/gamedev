@@ -1,6 +1,6 @@
 var gameSettings = {
     playerSpeed: 2,
-    fps: 20
+    fps: 10
 }
 
 var musicConfig = {
@@ -21,7 +21,7 @@ window.onload = function() {
         backgroundColor: 0x333333,
         pixelArt: true,
         type: Phaser.AUTO,
-        scene: [Scene1, Scene2],
+        scene: [Scene1, Scene2, Scene3],
         physics: {
             default: "arcade",
             arcade: {

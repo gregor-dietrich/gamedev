@@ -26,7 +26,7 @@ class Scene1 extends Phaser.Scene {
 
     create() {
         this.add.text(20, 20, "Loading game...");
-        this.scene.start("playGame");
+        this.scene.start("titleScreen");
 
         this.createAnimations("item", ["cherry", "gem"], gameSettings.fps, -1);
         this.createAnimations("player", ["idle", "run"], gameSettings.fps, -1);
