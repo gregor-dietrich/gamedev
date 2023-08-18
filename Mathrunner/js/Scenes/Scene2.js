@@ -4,32 +4,51 @@ class Scene2 extends Phaser.Scene {
     }
 
     create() {
-        this.background = this.add.tileSprite(0, 0, config.width, config.height, 'background');
-        this.middleground = this.add.tileSprite(0, 120, config.width, config.height, 'middleground');        
-        this.setTileSpriteRepeating(this.background);
-        this.setTileSpriteRepeating(this.middleground);
+        this.platforms = this.add.group();
+        this.props = this.add.group();
 
-        this.title = this.add.bitmapText(config.width / 2 - 120, 50, "pixelFont", "MATH RUNNER", 48);
-        this.title.tint = 0x000000;
-        this.start = this.add.bitmapText(config.width / 2 - 80, 90, "pixelFont", "Click/Tap to Start", 24);
-        this.start.tint = 0x000000;
+        createBackgrounds(this);
+        createPlatform(this, 22, false);
 
-        this.tweens.add({
-            targets: this.start,
-            alpha: 0,
-            duration: 1500,
-            ease: 'Power2',
-            yoyo: true,
-            repeat: -1
-        });
+        this.createProps();
+        this.createPlayer();
+        this.createTexts();
 
         this.input.on('pointerdown', function(pointer) {
             this.scene.start("playGame");
         }, this);
     }
 
-    setTileSpriteRepeating(tilesprite) {
-        tilesprite.fixedToCamera = true;
-        tilesprite.setOrigin(0, 0);
+    createProps() {
+        createProp(this, "palm", 0);
+        createProp(this, "bush", 110);
+        createProp(this, "bush", 190);
+        createProp(this, "tree2", 150);
+        createProp(this, "rock", 400);
+        createProp(this, "shrooms", 370);
+        createProp(this, "tree", 500);
+        createProp(this, "pine", config.width);
+    }
+
+    createPlayer() {
+        var player = this.add.sprite(config.width / 2 - 32, config.height - 64, "player-idle").setScale(2);
+        player.setScale(2);
+        player.play("player-idle_anim");
+    }
+
+    createTexts() {
+        var title = this.add.bitmapText(config.width / 2 - 132, 50, "pixelFont", "MATH RUNNER", 48);
+        title.tint = 0x000000;
+        var start = this.add.bitmapText(config.width / 2 - 90, 90, "pixelFont", "Click/Tap to Start", 24);
+        start.tint = 0x000000;
+
+        this.tweens.add({
+            targets: start,
+            alpha: 0,
+            duration: 1500,
+            ease: 'Power2',
+            yoyo: true,
+            repeat: -1
+        });
     }
 }

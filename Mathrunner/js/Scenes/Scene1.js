@@ -4,8 +4,10 @@ class Scene1 extends Phaser.Scene {
     }
 
     preload() {
+        // Font
         this.load.bitmapFont("pixelFont", "assets/font/font.png", "assets/font/font.xml");
 
+        // Environment
         this.load.image("background", "assets/images/environment/back.png");
         this.load.image("bush", "assets/images/environment/bush.png");
         this.load.image("middleground", "assets/images/environment/middle.png");
@@ -16,10 +18,20 @@ class Scene1 extends Phaser.Scene {
         this.load.image("tree", "assets/images/environment/tree.png");
         this.load.image("tree2", "assets/images/environment/tree2.png");
 
+        // Platforms
+        this.load.image("platform_grass1", "assets/images/platforms/grass1.png");
+        this.load.image("platform_grass2", "assets/images/platforms/grass2.png");
+        this.load.image("platform_grass3", "assets/images/platforms/grass3.png");
+
+        // Player
         this.loadSpritesheets("player", ["idle", "run", "jump", "hurt"], 33, 32);
+
+        // Enemies
         this.loadSpritesheets("enemy", ["death-explosion", "eagle"], 40, 41);
         this.loadSpritesheets("enemy", ["frog-idle", "frog-jump"], 35, 32);
         this.loadSpritesheet("enemy", "possum", 36, 28);
+
+        // Items
         this.loadSpritesheet("item", "cherry", 21, 21);
         this.loadSpritesheet("item", "gem", 15, 13);
     }
@@ -27,7 +39,9 @@ class Scene1 extends Phaser.Scene {
     create() {
         this.add.text(20, 20, "Loading game...");
         this.scene.start("titleScreen");
+        // this.scene.start("playGame");
 
+        // Animations
         this.createAnimations("item", ["cherry", "gem"], gameSettings.fps, -1);
         this.createAnimations("player", ["idle", "run"], gameSettings.fps, -1);
         this.createAnimations("player", ["hurt", "jump"], gameSettings.fps, 0);
