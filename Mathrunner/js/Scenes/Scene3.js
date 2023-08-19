@@ -17,10 +17,8 @@ class Scene3 extends Phaser.Scene {
         this.platformPool = this.add.group();
 
         this.createFirstPlatform();
-
-        // this.addPlatform();
-
-        
+        this.addPlatform();
+        this.addPlatform();
     }
 
     update() {
@@ -43,6 +41,22 @@ class Scene3 extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE))) {
             if (this.player.body.touching.down) {
                 this.player.setVelocityY(-gameSettings.playerJumpHeight);
+            }
+        }
+
+        // remove first platform if it's off screen
+        var firstPlatform = this.platformPool.getChildren()[0];
+        if (firstPlatform.getChildren()[firstPlatform.getChildren().length - 1].x < -64) {
+            this.platformPool.remove(firstPlatform);
+            this.addPlatform();
+
+            // clean up props
+            for (var i = 0; i < this.props.getChildren().length; i++) {
+                var prop = this.props.getChildren()[i];
+                if (prop.x < -100) {
+                    this.props.remove(prop);
+                    prop.destroy();
+                }
             }
         }
     }
@@ -69,16 +83,40 @@ class Scene3 extends Phaser.Scene {
     }
 
     addPlatform() {
-        // get the x position of the last platform and add a random amount of space before the next
-        var lastPlatform = this.platforms.getChildren()[this.platforms.getChildren().length - 1];
-        if (lastPlatform == undefined) {
-            return;
-        }
-        var nextPlatformX = lastPlatform.x + lastPlatform.width;
+        // get the last platform's last block's x position and add a random amount to it
+        var lastPlatform = this.platformPool.getChildren()[this.platformPool.getChildren().length - 1];
+        var nextPlatformX = lastPlatform.getChildren()[lastPlatform.getChildren().length - 1].x + Phaser.Math.Between(120, 250);
 
         // add a new platform with length between 20 and 50
-        let platformLength = Phaser.Math.Between(20, 50);
-        createPlatform(this, platformLength, nextPlatformX);
+        var platformLength = Phaser.Math.Between(20, 50);
+        var platform = createPlatform(this, platformLength, nextPlatformX, true);
+        platform.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 100);
+        this.platformPool.add(platform);
+        this.decoratePlatform(platform);
+        this.props.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 100);
+    }
+
+    decoratePlatform(platform) {
+        var platformLength = platform.getChildren().length;
+        var platformX = platform.getChildren()[0].x;
+
+        var maxBushes = Math.floor(platformLength / 10);
+        var maxTrees = Math.floor(platformLength / 10);
+        var maxRocks = Math.floor(platformLength / 20);
+        var maxShrooms = Math.floor(platformLength / 20);
+
+        this.addRandomProps(platformX, platformLength, maxBushes, ["bush"]);
+        this.addRandomProps(platformX, platformLength, maxTrees, ["pine", "palm", "tree", "tree2"]);
+        this.addRandomProps(platformX, platformLength, maxRocks, ["rock"]);
+        this.addRandomProps(platformX, platformLength, maxShrooms, ["shrooms"]);
+    }
+
+    addRandomProps(platformX, platformLength, maxProps, propNames) {
+        for (var i = 0; i < Phaser.Math.Between(maxProps/2, maxProps); i++) {
+            var propName = propNames[Phaser.Math.Between(0, propNames.length - 1)];
+            var prop = createProp(this, propName, platformX + Phaser.Math.Between(100, platformLength * 32 - 100));
+            prop.body.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 100);        
+        }
     }
 
     gameOver() {

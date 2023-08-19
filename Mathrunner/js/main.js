@@ -20,6 +20,7 @@ var game;
 setTileSpriteRepeating = function(tilesprite) {
     tilesprite.fixedToCamera = true;
     tilesprite.setOrigin(0, 0);
+    tilesprite.setDepth(-100);
 }
 
 createBackgrounds = function(scene) {
@@ -43,6 +44,7 @@ createPlatform = function(scene, length, startingX = 0, physicsEnabled = true) {
     if (physicsEnabled) {
         scene.physics.add.collider(scene.player, platform);
     }
+    console.log("Created platform at " + startingX + " with length " + length);
     return platform;
 }
 
@@ -75,9 +77,10 @@ createProp = function(scene, propName, positionX) {
             break;
     }
 
-    var prop = scene.add.image(positionX, positionY, propName);
+    var prop = scene.physics.add.image(positionX, positionY, propName);
     prop.setScale(scale);
     scene.props.add(prop);
+    return prop;
 }
 
 window.onload = function() {
