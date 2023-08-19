@@ -29,22 +29,23 @@ createBackgrounds = function(scene) {
     setTileSpriteRepeating(scene.middleground);
 }
 
-createPlatform = function(scene, length, physicsEnabled = true) {
+createPlatform = function(scene, length, startingX = 0, physicsEnabled = true) {
+    var platform = physicsEnabled ? scene.physics.add.group() : scene.add.group();
+    var blockWidth = 32;
     for (var i = 0; i < length; i++) {
-        var platform = scene.platforms.create(i * 32 -2, config.height - 32, "platform_grass" + Phaser.Math.Between(1, 3));
-        platform.setScale(2);
-        platform.setOrigin(0, 0);
-        // check if scene.platforms is a physics group
+        var block = platform.create(i * blockWidth + startingX, scene.game.config.height - 15, "platform_grass" + Phaser.Math.Between(1, 3));
+        block.setScale(2);
         if (physicsEnabled) {
-            platform.body.allowGravity = false;
-            platform.body.immovable = true;
-        }
-        // 50% chance to horizontally mirror the image
-        if (Math.random() >= 0.5) {
-            platform.flipX = true;
+            scene.physics.world.enable(block);
+            block.body.immovable = true;
         }
     }
+    if (physicsEnabled) {
+        scene.physics.add.collider(scene.player, platform);
+    }
+    return platform;
 }
+
 
 createProp = function(scene, propName, positionX) {
     var positionY = config.height;

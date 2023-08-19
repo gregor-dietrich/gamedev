@@ -4,11 +4,10 @@ class Scene2 extends Phaser.Scene {
     }
 
     create() {
-        this.platforms = this.add.group();
-        this.props = this.add.group();
+        this.props = this.physics.add.group();
 
         createBackgrounds(this);
-        createPlatform(this, 22, false);
+        createPlatform(this, 22, 0, false);
 
         this.createProps();
         this.createPlayer();

@@ -8,26 +8,19 @@ class Scene3 extends Phaser.Scene {
 
         this.background = this.add.tileSprite(0, 0, config.width, config.height, 'background');
         this.middleground = this.add.tileSprite(0, 120, config.width, config.height, 'middleground');
-        this.background.fixedToCamera = true;
-        this.middleground.fixedToCamera = true;
-        this.background.setOrigin(0, 0);
-        this.middleground.setOrigin(0, 0);
-
-        this.props = this.physics.add.group();
-        this.platforms = this.physics.add.group();
-
-        createPlatform(this, 70);
-        createProp(this, "bush", 100);
-        createProp(this, "palm", 300);
-        createProp(this, "pine", 500);
-        createProp(this, "rock", 700);
-        createProp(this, "shrooms", 900);
-        createProp(this, "tree", 1100);
-        createProp(this, "tree2", 1300);
+        setTileSpriteRepeating(this.background);
+        setTileSpriteRepeating(this.middleground);
 
         this.createPlayer();
 
-        this.physics.add.collider(this.player, this.platforms);
+        this.props = this.physics.add.group();
+        this.platformPool = this.add.group();
+
+        this.createFirstPlatform();
+
+        // this.addPlatform();
+
+        
     }
 
     update() {
@@ -52,6 +45,40 @@ class Scene3 extends Phaser.Scene {
                 this.player.setVelocityY(-gameSettings.playerJumpHeight);
             }
         }
+    }
+
+    createFirstPlatform() {
+        this.platformPool.add(createPlatform(this, 70));
+        createProp(this, "bush", 100);
+        createProp(this, "bush", 1420);
+        createProp(this, "bush", 1650);
+        createProp(this, "bush", 2100);
+        createProp(this, "pine", 520);
+        createProp(this, "palm", 310);
+        createProp(this, "palm", 800);
+        createProp(this, "palm", 1510);
+        createProp(this, "palm", 1700);
+        createProp(this, "tree", 1120);
+        createProp(this, "tree", 2050);
+        createProp(this, "tree2", 1310);
+        createProp(this, "tree2", 2150);
+        createProp(this, "rock", 710);
+        createProp(this, "rock", 1750);
+        createProp(this, "shrooms", 760);
+        createProp(this, "shrooms", 1700);
+    }
+
+    addPlatform() {
+        // get the x position of the last platform and add a random amount of space before the next
+        var lastPlatform = this.platforms.getChildren()[this.platforms.getChildren().length - 1];
+        if (lastPlatform == undefined) {
+            return;
+        }
+        var nextPlatformX = lastPlatform.x + lastPlatform.width;
+
+        // add a new platform with length between 20 and 50
+        let platformLength = Phaser.Math.Between(20, 50);
+        createPlatform(this, platformLength, nextPlatformX);
     }
 
     gameOver() {
@@ -86,16 +113,24 @@ class Scene3 extends Phaser.Scene {
 
     pauseGame() {
         this.paused = true;
-        this.player.play("player-idle_anim");
-        this.platforms.setVelocityX(0);
+
+        for (var i = 0; i < this.platformPool.getChildren().length; i++) {
+            this.platformPool.getChildren()[i].setVelocityX(0);
+        }    
         this.props.setVelocityX(0);
+
+        this.player.play("player-idle_anim");
     }
 
     unPauseGame() {
         this.paused = false;
-        this.player.play("player-run_anim");
-        this.platforms.setVelocityX(-gameSettings.playerSpeed * 100);
+
+        for (var i = 0; i < this.platformPool.getChildren().length; i++) {
+            this.platformPool.getChildren()[i].setVelocityX(-gameSettings.playerSpeed * 100);
+        }
         this.props.setVelocityX(-gameSettings.playerSpeed * 100);
+        
+        this.player.play("player-run_anim");
     }
 
     createPlayer() {
@@ -103,6 +138,7 @@ class Scene3 extends Phaser.Scene {
         this.player = this.physics.add.sprite(-33, config.height - 64, "player-run");
         this.player.setScale(2);
         this.player.play("player-run_anim");
+        this.player.depth = 1;
 
         // Enable physics on the player
         this.physics.world.enable(this.player);
