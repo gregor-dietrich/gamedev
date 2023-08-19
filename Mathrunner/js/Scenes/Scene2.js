@@ -20,14 +20,14 @@ class Scene2 extends Phaser.Scene {
     }
 
     createProps() {
-        createProp(this, "palm", 0);
-        createProp(this, "bush", 110);
-        createProp(this, "bush", 190);
-        createProp(this, "tree2", 150);
+        createProp(this, "palm", 60);
+        createProp(this, "bush", 150);
+        createProp(this, "bush", 230);
+        createProp(this, "tree2", 190);
         createProp(this, "rock", 400);
         createProp(this, "shrooms", 370);
         createProp(this, "tree", 500);
-        createProp(this, "pine", config.width);
+        createProp(this, "pine", config.width - 20);
     }
 
     createPlayer() {

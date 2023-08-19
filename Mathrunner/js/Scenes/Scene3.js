@@ -62,7 +62,7 @@ class Scene3 extends Phaser.Scene {
             this.title = this.add.bitmapText(config.width / 2 - 84, 50, "pixelFont", "GAME OVER", 48);
             this.title.tint = 0x000000;
 
-            this.time.delayedCall(3000, function() {
+            this.time.delayedCall(2000, function() {
                 this.restart = this.add.bitmapText(config.width / 2 - 80, 90, "pixelFont", "Click/Tap to Restart", 24);
                 this.restart.tint = 0x000000;
     
