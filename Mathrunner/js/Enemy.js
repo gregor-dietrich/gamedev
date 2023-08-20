@@ -22,6 +22,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             return;
         }
         this.spottedPlayer = true;
+        this.scene.questionSound.play();
         
         // enemy spotted player
         this.scene.pauseGame();
@@ -34,28 +35,31 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             repeat: 0,
             onComplete: () => {
                 // enemy arrived at player
-                this.scene.playerHurt(gameSettings.questionPenalty);
-                if (this.enemyName == "enemy-frog-jump") {
-                    this.y = config.height - 54;
-                    this.play("enemy-frog-idle_anim");
-                }
-                this.scene.time.delayedCall(5000, () => {
-                    // enemy leaving
+                this.scene.wrongSound.play();
+                this.scene.time.delayedCall(1000, () => {
+                    this.scene.playerHurt(gameSettings.questionPenalty);
                     if (this.enemyName == "enemy-frog-jump") {
-                        this.y = config.height - 64;
-                        this.play("enemy-frog-jump_anim");
+                        this.y = config.height - 54;
+                        this.play("enemy-frog-idle_anim");
                     }
-                    this.scene.tweens.add({
-                        targets: this,
-                        x: -100,
-                        duration: 1000,
-                        ease: 'Linear',
-                        repeat: 0,
-                        onComplete: () => {
-                            this.destroy();
+                    this.scene.time.delayedCall(5000, () => {
+                        // enemy leaving
+                        if (this.enemyName == "enemy-frog-jump") {
+                            this.y = config.height - 64;
+                            this.play("enemy-frog-jump_anim");
                         }
-                    });                    
-                    this.scene.unpauseGame();
+                        this.scene.tweens.add({
+                            targets: this,
+                            x: -100,
+                            duration: 1000,
+                            ease: 'Linear',
+                            repeat: 0,
+                            onComplete: () => {
+                                this.destroy();
+                            }
+                        });                    
+                        this.scene.unpauseGame();
+                    }, null, this);
                 }, null, this);
             }
         });

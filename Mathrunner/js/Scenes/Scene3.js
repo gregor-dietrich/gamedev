@@ -2,6 +2,8 @@
 // Add questions when enemies arrive
 // Add spike traps 50% chance of appearing if platform is longer than 30 blocks
 // Add items, 50% chance of appearing for every 10 blocks of platform length
+// Add sounds: cherry, gem, correct answer
+// Add music
 class Scene3 extends Phaser.Scene {
     constructor() {
         super("playGame");
@@ -23,6 +25,7 @@ class Scene3 extends Phaser.Scene {
         this.enemies = this.physics.add.group();
         this.platformPool = this.add.group();
 
+        this.createSounds();
         this.createTopBar();
         this.createPlayer();
 
@@ -33,6 +36,7 @@ class Scene3 extends Phaser.Scene {
 
     update() {
         if (this.player.y > config.height - 24) {
+            this.gameoverSound.play();
             this.gameOver();
         }
 
@@ -83,6 +87,12 @@ class Scene3 extends Phaser.Scene {
     updateScoreLabel() {
         var labelText = this.score - this.penalty < 0 ? 0 : this.score - this.penalty;
         this.scoreLabel.text = "SCORE: " + this.zeroPad(labelText, 6);
+    }
+
+    createSounds() {
+        for (var i = 0; i < audioFiles.length; i++) {
+            this[audioFiles[i] + "Sound"] = this.sound.add("audio_" + audioFiles[i], musicConfig);
+        }
     }
 
     createTopBar() {
@@ -201,7 +211,7 @@ class Scene3 extends Phaser.Scene {
             this.player.body.enable = false;
             this.player.body.gravity.y = 0;
             this.player.setVelocityX(0);
-            this.player.setVelocityY(0);
+            this.player.setVelocityY(0);            
 
             var title = this.add.bitmapText(config.width / 2 - 84, 50, "pixelFont", "GAME OVER", 48);
             title.tint = 0x000000;
@@ -411,19 +421,18 @@ class Scene3 extends Phaser.Scene {
         if (this.player.body.touching.down) {
             this.player.setVelocityY(-gameSettings.playerJumpHeight);
             this.player.play("player-jump_anim");
+            this.jumpSound.play();
             this.time.delayedCall(1200, function() {
-                this.player.play("player-run_anim");
+                this.player.play(this.paused ? "player-idle_anim" : "player-run_anim");
             }, [], this);
         }
     }
 
     playerHurt(scorePenalty = 0) {
-        console.log("old score: " + (this.score - this.penalty));
-        console.log("penalty: " + scorePenalty);
         this.penalty += scorePenalty;
         this.updateScoreLabel();
-        console.log("new score: " + (this.score - this.penalty));
         this.player.play("player-hurt_anim");
+        this.hurtSound.play();
         this.player.setVelocityY(-gameSettings.playerJumpHeight);
         this.time.delayedCall(1200, function() {
             this.player.play(this.paused ? "player-idle_anim" : "player-run_anim");

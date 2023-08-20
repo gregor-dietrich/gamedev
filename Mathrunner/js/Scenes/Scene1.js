@@ -1,3 +1,7 @@
+var audioFiles = ["cherry", "correct", "gameover", "gem", "hurt", "jump", "question", "wrong"];
+var envImageFiles = ["background", "bush", "middleground", "palm", "pine", "rock", "shrooms", "tree", "tree2"]
+var platformImageFiles = ["grass1", "grass2", "grass3"]
+
 class Scene1 extends Phaser.Scene {
     constructor() {
         super("bootGame");
@@ -7,21 +11,19 @@ class Scene1 extends Phaser.Scene {
         // Font
         this.load.bitmapFont("pixelFont", "assets/font/font.png", "assets/font/font.xml");
 
-        // Environment
-        this.load.image("background", "assets/images/environment/back.png");
-        this.load.image("bush", "assets/images/environment/bush.png");
-        this.load.image("middleground", "assets/images/environment/middle.png");
-        this.load.image("palm", "assets/images/environment/palm.png");
-        this.load.image("pine", "assets/images/environment/pine.png");
-        this.load.image("rock", "assets/images/environment/rock.png");
-        this.load.image("shrooms", "assets/images/environment/shrooms.png");
-        this.load.image("tree", "assets/images/environment/tree.png");
-        this.load.image("tree2", "assets/images/environment/tree2.png");
+        // Audio
+        for (var i = 0; i < audioFiles.length; i++) {
+            this.loadAudio(audioFiles[i]);
+        }
 
+        // Environment
+        for (var i = 0; i < envImageFiles.length; i++) {
+            this.loadImage("environment", envImageFiles[i]);
+        }
         // Platforms
-        this.load.image("platform_grass1", "assets/images/platforms/grass1.png");
-        this.load.image("platform_grass2", "assets/images/platforms/grass2.png");
-        this.load.image("platform_grass3", "assets/images/platforms/grass3.png");
+        for (var i = 0; i < platformImageFiles.length; i++) {
+            this.loadImage("platforms", platformImageFiles[i]);
+        }
 
         // Player
         this.loadSpritesheets("player", ["idle", "run", "jump", "hurt"], 33, 32);
@@ -47,6 +49,14 @@ class Scene1 extends Phaser.Scene {
         this.createAnimations("player", ["jump"], gameSettings.fps / 4, 0);
         this.createAnimations("player", ["hurt"], gameSettings.fps * 2, 0);
         this.createAnimations("enemy", ["eagle", "frog-idle", "frog-jump", "possum"], gameSettings.fps / 2, -1);
+    }
+
+    loadAudio(name) {
+        this.load.audio("audio_" + name, ["assets/sounds/" + name + ".ogg"]);
+    }
+
+    loadImage(subDir, name) {
+        this.load.image(name, "assets/images/" + subDir + "/" + name + ".png");
     }
 
     loadSpritesheets(prefix, names, width, height) {

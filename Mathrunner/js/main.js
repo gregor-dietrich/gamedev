@@ -27,7 +27,7 @@ var musicConfig = {
     rate: 1,
     detune: 0,
     seek: 0,
-    loop: true,
+    loop: false,
     delay: 0
 }
 
@@ -51,7 +51,7 @@ createPlatform = function(scene, length, startingX = 0, physicsEnabled = true) {
     var platform = physicsEnabled ? scene.physics.add.group() : scene.add.group();
     var blockWidth = 32;
     for (var i = 0; i < length; i++) {
-        var block = platform.create(i * blockWidth + startingX, scene.game.config.height - 15, "platform_grass" + Phaser.Math.Between(1, 3));
+        var block = platform.create(i * blockWidth + startingX, scene.game.config.height - 15, "grass" + Phaser.Math.Between(1, 3));
         block.setScale(2);
         if (Phaser.Math.Between(0, 1) == 1) {
             block.flipX = true;
