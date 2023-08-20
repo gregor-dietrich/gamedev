@@ -401,6 +401,10 @@ class Scene3 extends Phaser.Scene {
     playerJump() {
         if (this.player.body.touching.down) {
             this.player.setVelocityY(-gameSettings.playerJumpHeight);
+            this.player.play("player-jump_anim");
+            this.time.delayedCall(1200, function() {
+                this.player.play("player-run_anim");
+            }, [], this);
         }
     }
 
