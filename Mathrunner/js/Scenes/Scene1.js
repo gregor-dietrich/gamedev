@@ -27,7 +27,7 @@ class Scene1 extends Phaser.Scene {
         this.loadSpritesheets("player", ["idle", "run", "jump", "hurt"], 33, 32);
 
         // Enemies
-        this.loadSpritesheets("enemy", ["death-explosion", "eagle"], 40, 41);
+        this.loadSpritesheets("enemy", ["eagle"], 40, 41);
         this.loadSpritesheets("enemy", ["frog-idle", "frog-jump"], 35, 32);
         this.loadSpritesheet("enemy", "possum", 36, 28);
 
@@ -46,7 +46,6 @@ class Scene1 extends Phaser.Scene {
         this.createAnimations("player", ["idle", "run"], gameSettings.fps, -1);
         this.createAnimations("player", ["hurt", "jump"], gameSettings.fps, 0);
         this.createAnimations("enemy", ["eagle", "frog-idle", "frog-jump", "possum"], gameSettings.fps / 2, -1);
-        this.createAnimation("enemy", "death-explosion", gameSettings.fps, 0, true);
     }
 
     loadSpritesheets(prefix, names, width, height) {

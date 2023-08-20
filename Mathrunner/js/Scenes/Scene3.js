@@ -1,3 +1,7 @@
+// TO DO:
+// - Add player jump animation
+
+
 class Scene3 extends Phaser.Scene {
     constructor() {
         super("playGame");
@@ -303,6 +307,8 @@ class Scene3 extends Phaser.Scene {
         var platform = createPlatform(this, platformLength, nextPlatformX, true);
         platform.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 200);
         this.platformPool.add(platform);
+
+        // decorate the platform
         this.decoratePlatform(platform);
         if (this.timePassed - this.lastEnemySpawned > gameSettings.enemySpawnRate * 60) {
             this.spawnEnemy(platform);
@@ -359,7 +365,7 @@ class Scene3 extends Phaser.Scene {
         }
     }
 
-    createPlayer(skipMonologue = false) {
+    createPlayer() {
         // Add the player sprite
         this.player = this.physics.add.sprite(-33, config.height - 64, "player-run");
         this.player.setScale(2);
@@ -382,10 +388,6 @@ class Scene3 extends Phaser.Scene {
         // Starting monologue
         this.time.delayedCall(1000, function() {
             this.player.play("player-idle_anim");
-            if (skipMonologue) {
-                this.unpauseGame();
-                return;
-            }
 
             this.playerSpeak("Oh no! I'm late for school!\nI need to get there fast!");
 
