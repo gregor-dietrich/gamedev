@@ -1,6 +1,9 @@
 var gameSettings = {
-    playerSpeed: 2,
+    playerSpeed: 1,
     playerJumpHeight: 300,
+    gravity: 500,
+    minJumpGap: 120,
+    maxJumpGap: 240,
     fps: 10
 }
 
@@ -44,7 +47,6 @@ createPlatform = function(scene, length, startingX = 0, physicsEnabled = true) {
     if (physicsEnabled) {
         scene.physics.add.collider(scene.player, platform);
     }
-    console.log("Created platform at " + startingX + " with length " + length);
     return platform;
 }
 

@@ -5,36 +5,46 @@ class Scene3 extends Phaser.Scene {
 
     create() {
         this.paused = true;
+        this.alive = true;
+        this.timePassed = 0;
+        this.score = 0;
 
         this.background = this.add.tileSprite(0, 0, config.width, config.height, 'background');
         this.middleground = this.add.tileSprite(0, 120, config.width, config.height, 'middleground');
         setTileSpriteRepeating(this.background);
         setTileSpriteRepeating(this.middleground);
 
-        this.createPlayer();
-
         this.props = this.physics.add.group();
         this.platformPool = this.add.group();
 
+        this.createTopBar();
+        this.createPlayer();
+
         this.createFirstPlatform();
         this.addPlatform();
-        this.addPlatform();
+        this.addPlatform();  
     }
 
     update() {
-        if (this.paused) {
+        if (this.paused) { 
             return;
         }
 
+        // score keeping
+        this.timePassed += 1;
+        if (this.timePassed % 10 == 0) {
+            this.score = Math.floor(this.timePassed);
+            this.scoreLabel.text = "SCORE: " + this.zeroPad(this.score, 6);
+        }
+
         // game over
-        if (this.player.y > config.height - 24) {
-            // delay to allow player to fall off screen
-            this.time.delayedCall(200, this.gameOver, [], this);
+        if (this.player.y > config.height - 24 && this.alive) {
+            this.gameOver();
         }
 
         // move the background
-        this.background.tilePositionX += gameSettings.playerSpeed;
-        this.middleground.tilePositionX += gameSettings.playerSpeed * 2;
+        this.background.tilePositionX += gameSettings.playerSpeed * 0.5;
+        this.middleground.tilePositionX += gameSettings.playerSpeed * 1.5;
         this.background.tilePositionY = Math.sin(this.background.tilePositionX / 100);
 
         // jump if spacebar is pressed
@@ -61,6 +71,67 @@ class Scene3 extends Phaser.Scene {
         }
     }
 
+    createTopBar() {
+        this.topBar = this.add.graphics();
+        this.topBar.alpha = 0;
+        this.topBar.fillStyle(0x000000, 1);
+        this.topBar.beginPath();
+        this.topBar.moveTo(0,0);
+        this.topBar.lineTo(config.width, 0);
+        this.topBar.lineTo(config.width, 40);
+        this.topBar.lineTo(0, 40);
+        this.topBar.lineTo(0, 0);
+        this.topBar.closePath();
+        this.topBar.fillPath();
+
+        this.scoreLabel = this.add.bitmapText(10, 12, "pixelFont", "SCORE: 000000", 24); 
+        this.scoreLabel.alpha = 0; 
+        this.scoreLabel.tint = 0xFFFFFF;
+        this.scoreLabel.depth = 2; 
+    }
+
+    zeroPad(number, size) {
+        var stringNumber = String(number);
+        while(stringNumber.length < (size || 2)) {
+            stringNumber = "0" + stringNumber;
+        }
+        return stringNumber;
+    }
+
+    showTopBar() {
+        this.tweens.add({
+            targets: this.topBar,
+            alpha: 0.5,
+            duration: 1000,
+            ease: 'Power2',
+            repeat: 0
+        });
+        this.tweens.add({
+            targets: this.scoreLabel,
+            alpha: 1,
+            duration: 1000,
+            ease: 'Power2',
+            repeat: 0
+        });
+    }
+
+    hideTopBar() {
+        this.tweens.add({
+            targets: this.scoreLabel,
+            alpha: 0,
+            duration: 1000,
+            ease: 'Power2',
+            repeat: 0
+        });
+        this.tweens.add({
+            targets: this.topBar,
+            alpha: 0,
+            duration: 1000,
+            ease: 'Power2',
+            repeat: 0
+        });
+    }
+
     createFirstPlatform() {
         this.platformPool.add(createPlatform(this, 70));
         createProp(this, "bush", 100);
@@ -85,15 +156,15 @@ class Scene3 extends Phaser.Scene {
     addPlatform() {
         // get the last platform's last block's x position and add a random amount to it
         var lastPlatform = this.platformPool.getChildren()[this.platformPool.getChildren().length - 1];
-        var nextPlatformX = lastPlatform.getChildren()[lastPlatform.getChildren().length - 1].x + Phaser.Math.Between(120, 250);
+        var nextPlatformX = lastPlatform.getChildren()[lastPlatform.getChildren().length - 1].x + Phaser.Math.Between(gameSettings.minJumpGap, gameSettings.maxJumpGap);
 
         // add a new platform with length between 20 and 50
         var platformLength = Phaser.Math.Between(20, 50);
         var platform = createPlatform(this, platformLength, nextPlatformX, true);
-        platform.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 100);
+        platform.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 200);
         this.platformPool.add(platform);
         this.decoratePlatform(platform);
-        this.props.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 100);
+        this.props.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 200);
     }
 
     decoratePlatform(platform) {
@@ -102,28 +173,32 @@ class Scene3 extends Phaser.Scene {
 
         var maxBushes = Math.floor(platformLength / 10);
         var maxTrees = Math.floor(platformLength / 10);
-        var maxRocks = Math.floor(platformLength / 20);
-        var maxShrooms = Math.floor(platformLength / 20);
+        var maxRocks = Math.floor(platformLength / 15);
+        var maxShrooms = Math.floor(platformLength / 15);
 
         this.addRandomProps(platformX, platformLength, maxBushes, ["bush"]);
-        this.addRandomProps(platformX, platformLength, maxTrees, ["pine", "palm", "tree", "tree2"]);
         this.addRandomProps(platformX, platformLength, maxRocks, ["rock"]);
+        this.addRandomProps(platformX, platformLength, maxTrees, ["pine", "palm", "tree", "tree2"]);
         this.addRandomProps(platformX, platformLength, maxShrooms, ["shrooms"]);
     }
 
     addRandomProps(platformX, platformLength, maxProps, propNames) {
-        for (var i = 0; i < Phaser.Math.Between(maxProps/2, maxProps); i++) {
+        for (var i = 0; i < Phaser.Math.Between(Math.floor(maxProps/2), maxProps); i++) {
             var propName = propNames[Phaser.Math.Between(0, propNames.length - 1)];
-            var prop = createProp(this, propName, platformX + Phaser.Math.Between(100, platformLength * 32 - 100));
-            prop.body.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 100);        
+            var prop = createProp(this, propName, platformX + Phaser.Math.Between(50, platformLength * 32 - 100));
+            prop.body.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 200);        
         }
     }
 
     gameOver() {
-        this.pauseGame();
-        this.player.body.enable = false;
-
         this.time.delayedCall(2000, function() {
+            this.pauseGame();
+            
+            this.player.body.enable = false;
+            this.player.body.gravity.y = 0;
+            this.player.setVelocityX(0);
+            this.player.setVelocityY(0);
+
             this.title = this.add.bitmapText(config.width / 2 - 84, 50, "pixelFont", "GAME OVER", 48);
             this.title.tint = 0x000000;
 
@@ -139,8 +214,6 @@ class Scene3 extends Phaser.Scene {
                     yoyo: true,
                     repeat: -1
                 });
-
-                this.player.destroy();
     
                 this.input.on('pointerdown', function(pointer) {
                     this.scene.start("playGame");
@@ -151,6 +224,7 @@ class Scene3 extends Phaser.Scene {
 
     pauseGame() {
         this.paused = true;
+        this.hideTopBar();
 
         for (var i = 0; i < this.platformPool.getChildren().length; i++) {
             this.platformPool.getChildren()[i].setVelocityX(0);
@@ -162,16 +236,17 @@ class Scene3 extends Phaser.Scene {
 
     unPauseGame() {
         this.paused = false;
+        this.showTopBar();
 
         for (var i = 0; i < this.platformPool.getChildren().length; i++) {
-            this.platformPool.getChildren()[i].setVelocityX(-gameSettings.playerSpeed * 100);
+            this.platformPool.getChildren()[i].setVelocityX(-gameSettings.playerSpeed * 200);
         }
-        this.props.setVelocityX(-gameSettings.playerSpeed * 100);
+        this.props.setVelocityX(-gameSettings.playerSpeed * 200);
         
         this.player.play("player-run_anim");
     }
 
-    createPlayer() {
+    createPlayer(skipMonologue = false) {
         // Add the player sprite
         this.player = this.physics.add.sprite(-33, config.height - 64, "player-run");
         this.player.setScale(2);
@@ -180,7 +255,7 @@ class Scene3 extends Phaser.Scene {
 
         // Enable physics on the player
         this.physics.world.enable(this.player);
-        this.player.body.gravity.y = 500;
+        this.player.body.gravity.y = gameSettings.gravity;
 
         // Player intro animation
         this.tweens.add({
@@ -194,6 +269,11 @@ class Scene3 extends Phaser.Scene {
         // Starting monologue
         this.time.delayedCall(1000, function() {
             this.player.play("player-idle_anim");
+            if (skipMonologue) {
+                this.unPauseGame();
+                return;
+            }
+
             this.playerSpeak("Oh no! I'm late for school!\nI need to get there fast!");
 
             this.time.delayedCall(6000, function() {
