@@ -1,9 +1,11 @@
 var gameSettings = {
     playerSpeed: 1,
     playerJumpHeight: 300,
-    gravity: 500,
-    minJumpGap: 120,
-    maxJumpGap: 240,
+    playerGravity: 500,
+    platformLengthMin: 20,
+    platformLengthMax: 50,
+    platformGapMin: 120,
+    platformGapMax: 240,
     fps: 10
 }
 

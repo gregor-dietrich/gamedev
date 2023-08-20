@@ -5,7 +5,6 @@ class Scene3 extends Phaser.Scene {
 
     create() {
         this.paused = true;
-        this.alive = true;
         this.timePassed = 0;
         this.score = 0;
 
@@ -26,6 +25,13 @@ class Scene3 extends Phaser.Scene {
     }
 
     update() {
+        this.background.tilePositionY = Math.sin(this.background.tilePositionX / 100);
+
+        // game over
+        if (this.player.y > config.height - 24) {
+            this.gameOver();
+        }
+
         if (this.paused) { 
             return;
         }
@@ -37,21 +43,13 @@ class Scene3 extends Phaser.Scene {
             this.scoreLabel.text = "SCORE: " + this.zeroPad(this.score, 6);
         }
 
-        // game over
-        if (this.player.y > config.height - 24 && this.alive) {
-            this.gameOver();
-        }
-
         // move the background
         this.background.tilePositionX += gameSettings.playerSpeed * 0.5;
         this.middleground.tilePositionX += gameSettings.playerSpeed * 1.5;
-        this.background.tilePositionY = Math.sin(this.background.tilePositionX / 100);
 
         // jump if spacebar is pressed
         if (Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE))) {
-            if (this.player.body.touching.down) {
-                this.player.setVelocityY(-gameSettings.playerJumpHeight);
-            }
+            this.playerJump();
         }
 
         // remove first platform if it's off screen
@@ -87,7 +85,27 @@ class Scene3 extends Phaser.Scene {
         this.scoreLabel = this.add.bitmapText(10, 12, "pixelFont", "SCORE: 000000", 24); 
         this.scoreLabel.alpha = 0; 
         this.scoreLabel.tint = 0xFFFFFF;
-        this.scoreLabel.depth = 2; 
+        this.scoreLabel.depth = 2;
+
+        this.jumpButton = this.add.bitmapText(config.width - 100, 10, "pixelFont", "JUMP", 36);
+        this.jumpButton.alpha = 0;
+        this.jumpButton.tint = 0xFFFFFF;
+        this.jumpButton.depth = 2;
+        this.jumpButton.setInteractive();
+        this.jumpButton.on('pointerdown', function(pointer) {
+            this.playerJump();
+        }, this);
+
+        this.pauseButton = this.add.bitmapText(config.width - 220, 10, "pixelFont", "PAUSE", 36);
+        this.pauseButton.alpha = 0;
+        this.pauseButton.tint = 0xFFFFFF;
+        this.pauseButton.depth = 2;
+        this.pauseButton.setInteractive();
+        this.pauseButton.on('pointerdown', function(pointer) {
+            if (!this.paused) {
+                this.playerPause();
+            }
+        }, this);
     }
 
     zeroPad(number, size) {
@@ -113,6 +131,20 @@ class Scene3 extends Phaser.Scene {
             ease: 'Power2',
             repeat: 0
         });
+        this.tweens.add({
+            targets: this.jumpButton,
+            alpha: 1,
+            duration: 1000,
+            ease: 'Power2',
+            repeat: 0
+        });
+        this.tweens.add({
+            targets: this.pauseButton,
+            alpha: 1,
+            duration: 1000,
+            ease: 'Power2',
+            repeat: 0
+        });
     }
 
     hideTopBar() {
@@ -130,6 +162,106 @@ class Scene3 extends Phaser.Scene {
             ease: 'Power2',
             repeat: 0
         });
+        this.tweens.add({
+            targets: this.jumpButton,
+            alpha: 0,
+            duration: 1000,
+            ease: 'Power2',
+            repeat: 0
+        });
+        this.tweens.add({
+            targets: this.pauseButton,
+            alpha: 0,
+            duration: 1000,
+            ease: 'Power2',
+            repeat: 0
+        });
+    }
+
+    gameOver() {
+        this.time.delayedCall(2000, function() {
+            this.pauseGame();
+            
+            this.player.body.enable = false;
+            this.player.body.gravity.y = 0;
+            this.player.setVelocityX(0);
+            this.player.setVelocityY(0);
+
+            var title = this.add.bitmapText(config.width / 2 - 84, 50, "pixelFont", "GAME OVER", 48);
+            title.tint = 0x000000;
+
+            var restart = this.add.bitmapText(config.width / 2 - 80, 90, "pixelFont", "Click/Tap to Restart", 24);
+            restart.alpha = 0;
+            restart.tint = 0x000000;
+
+            this.time.delayedCall(1000, function() {
+                this.tweens.add({
+                    targets: restart,
+                    alpha: 1,
+                    duration: 1500,
+                    ease: 'Power2',
+                    yoyo: true,
+                    repeat: -1
+                });
+
+                this.input.on('pointerdown', function(pointer) {
+                    this.scene.start("playGame");
+                }, this);
+            }, [], this);
+        }, [], this);        
+    }
+
+    playerPause() {
+        this.pauseGame();
+
+        var gamePausedText = this.add.bitmapText(config.width / 2 - 100, 50, "pixelFont", "GAME PAUSED", 48);
+        gamePausedText.tint = 0x000000;
+
+        var unpauseText = this.add.bitmapText(config.width / 2 - 80, 90, "pixelFont", "Click/Tap to resume", 24);
+        unpauseText.alpha = 0;
+        unpauseText.tint = 0x000000;
+
+        this.time.delayedCall(1000, function() {
+            this.tweens.add({
+                targets: unpauseText,
+                alpha: 1,
+                duration: 1500,
+                ease: 'Power2',
+                yoyo: true,
+                repeat: -1
+            });
+
+            this.input.on('pointerdown', function(pointer) {
+                this.unPauseGame();
+                gamePausedText.destroy();
+                unpauseText.destroy();
+                this.input.removeAllListeners();
+            }, this);
+        }, [], this);
+    }
+
+    pauseGame() {
+        this.paused = true;
+        this.hideTopBar();
+
+        for (var i = 0; i < this.platformPool.getChildren().length; i++) {
+            this.platformPool.getChildren()[i].setVelocityX(0);
+        }    
+        this.props.setVelocityX(0);
+
+        this.player.play("player-idle_anim");
+    }
+
+    unPauseGame() {
+        this.paused = false;
+        this.showTopBar();
+
+        for (var i = 0; i < this.platformPool.getChildren().length; i++) {
+            this.platformPool.getChildren()[i].setVelocityX(-gameSettings.playerSpeed * 200);
+        }
+        this.props.setVelocityX(-gameSettings.playerSpeed * 200);
+        
+        this.player.play("player-run_anim");
     }
 
     createFirstPlatform() {
@@ -156,10 +288,10 @@ class Scene3 extends Phaser.Scene {
     addPlatform() {
         // get the last platform's last block's x position and add a random amount to it
         var lastPlatform = this.platformPool.getChildren()[this.platformPool.getChildren().length - 1];
-        var nextPlatformX = lastPlatform.getChildren()[lastPlatform.getChildren().length - 1].x + Phaser.Math.Between(gameSettings.minJumpGap, gameSettings.maxJumpGap);
+        var nextPlatformX = lastPlatform.getChildren()[lastPlatform.getChildren().length - 1].x + Phaser.Math.Between(gameSettings.platformGapMin, gameSettings.platformGapMax);
 
         // add a new platform with length between 20 and 50
-        var platformLength = Phaser.Math.Between(20, 50);
+        var platformLength = Phaser.Math.Between(gameSettings.platformLengthMin, gameSettings.platformLengthMax);
         var platform = createPlatform(this, platformLength, nextPlatformX, true);
         platform.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 200);
         this.platformPool.add(platform);
@@ -190,62 +322,6 @@ class Scene3 extends Phaser.Scene {
         }
     }
 
-    gameOver() {
-        this.time.delayedCall(2000, function() {
-            this.pauseGame();
-            
-            this.player.body.enable = false;
-            this.player.body.gravity.y = 0;
-            this.player.setVelocityX(0);
-            this.player.setVelocityY(0);
-
-            this.title = this.add.bitmapText(config.width / 2 - 84, 50, "pixelFont", "GAME OVER", 48);
-            this.title.tint = 0x000000;
-
-            this.time.delayedCall(2000, function() {
-                this.restart = this.add.bitmapText(config.width / 2 - 80, 90, "pixelFont", "Click/Tap to Restart", 24);
-                this.restart.tint = 0x000000;
-    
-                this.tweens.add({
-                    targets: this.restart,
-                    alpha: 0,
-                    duration: 1500,
-                    ease: 'Power2',
-                    yoyo: true,
-                    repeat: -1
-                });
-    
-                this.input.on('pointerdown', function(pointer) {
-                    this.scene.start("playGame");
-                }, this);
-            }, [], this);
-        }, [], this);        
-    }
-
-    pauseGame() {
-        this.paused = true;
-        this.hideTopBar();
-
-        for (var i = 0; i < this.platformPool.getChildren().length; i++) {
-            this.platformPool.getChildren()[i].setVelocityX(0);
-        }    
-        this.props.setVelocityX(0);
-
-        this.player.play("player-idle_anim");
-    }
-
-    unPauseGame() {
-        this.paused = false;
-        this.showTopBar();
-
-        for (var i = 0; i < this.platformPool.getChildren().length; i++) {
-            this.platformPool.getChildren()[i].setVelocityX(-gameSettings.playerSpeed * 200);
-        }
-        this.props.setVelocityX(-gameSettings.playerSpeed * 200);
-        
-        this.player.play("player-run_anim");
-    }
-
     createPlayer(skipMonologue = false) {
         // Add the player sprite
         this.player = this.physics.add.sprite(-33, config.height - 64, "player-run");
@@ -255,7 +331,7 @@ class Scene3 extends Phaser.Scene {
 
         // Enable physics on the player
         this.physics.world.enable(this.player);
-        this.player.body.gravity.y = gameSettings.gravity;
+        this.player.body.gravity.y = gameSettings.playerGravity;
 
         // Player intro animation
         this.tweens.add({
@@ -281,6 +357,12 @@ class Scene3 extends Phaser.Scene {
                 this.unPauseGame();
             }, [], this);
         }, [], this);
+    }
+
+    playerJump() {
+        if (this.player.body.touching.down) {
+            this.player.setVelocityY(-gameSettings.playerJumpHeight);
+        }
     }
 
     playerSpeak(text, duration = 5000, fadeInSpeed = 1000, fadeOutSpeed = 500) {

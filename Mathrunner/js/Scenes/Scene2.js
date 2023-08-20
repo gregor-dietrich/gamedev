@@ -39,11 +39,12 @@ class Scene2 extends Phaser.Scene {
         var title = this.add.bitmapText(config.width / 2 - 132, 50, "pixelFont", "MATH RUNNER", 48);
         title.tint = 0x000000;
         var start = this.add.bitmapText(config.width / 2 - 90, 90, "pixelFont", "Click/Tap to Start", 24);
+        start.alpha = 0;
         start.tint = 0x000000;
 
         this.tweens.add({
             targets: start,
-            alpha: 0,
+            alpha: 1,
             duration: 1500,
             ease: 'Power2',
             yoyo: true,
