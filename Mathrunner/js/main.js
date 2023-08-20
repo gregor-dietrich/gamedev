@@ -6,7 +6,8 @@ var gameSettings = {
     platformLengthMax: 50,
     platformGapMin: 120,
     platformGapMax: 240,
-    fps: 10
+    enemySpawnRate: 30, // in seconds
+    fps: 10 // spritesheet fps
 }
 
 var musicConfig = {

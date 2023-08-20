@@ -7,6 +7,7 @@ class Scene3 extends Phaser.Scene {
         this.paused = true;
         this.timePassed = 0;
         this.score = 0;
+        this.lastEnemySpawned = 0;
 
         this.background = this.add.tileSprite(0, 0, config.width, config.height, 'background');
         this.middleground = this.add.tileSprite(0, 120, config.width, config.height, 'middleground');
@@ -14,6 +15,7 @@ class Scene3 extends Phaser.Scene {
         setTileSpriteRepeating(this.middleground);
 
         this.props = this.physics.add.group();
+        this.enemies = this.physics.add.group();
         this.platformPool = this.add.group();
 
         this.createTopBar();
@@ -25,9 +27,6 @@ class Scene3 extends Phaser.Scene {
     }
 
     update() {
-        this.background.tilePositionY = Math.sin(this.background.tilePositionX / 100);
-
-        // game over
         if (this.player.y > config.height - 24) {
             this.gameOver();
         }
@@ -45,6 +44,7 @@ class Scene3 extends Phaser.Scene {
 
         // move the background
         this.background.tilePositionX += gameSettings.playerSpeed * 0.5;
+        this.background.tilePositionY = Math.sin(this.background.tilePositionX / 100);
         this.middleground.tilePositionX += gameSettings.playerSpeed * 1.5;
 
         // jump if spacebar is pressed
@@ -66,6 +66,12 @@ class Scene3 extends Phaser.Scene {
                     prop.destroy();
                 }
             }
+        }
+
+        // update enemies
+        for (var i = 0; i < this.enemies.getChildren().length; i++) {
+            var enemy = this.enemies.getChildren()[i];
+            enemy.update();
         }
     }
 
@@ -232,7 +238,7 @@ class Scene3 extends Phaser.Scene {
             });
 
             this.input.on('pointerdown', function(pointer) {
-                this.unPauseGame();
+                this.unpauseGame();
                 gamePausedText.destroy();
                 unpauseText.destroy();
                 this.input.removeAllListeners();
@@ -248,11 +254,12 @@ class Scene3 extends Phaser.Scene {
             this.platformPool.getChildren()[i].setVelocityX(0);
         }    
         this.props.setVelocityX(0);
+        this.enemies.setVelocityX(0);
 
         this.player.play("player-idle_anim");
     }
 
-    unPauseGame() {
+    unpauseGame() {
         this.paused = false;
         this.showTopBar();
 
@@ -260,6 +267,7 @@ class Scene3 extends Phaser.Scene {
             this.platformPool.getChildren()[i].setVelocityX(-gameSettings.playerSpeed * 200);
         }
         this.props.setVelocityX(-gameSettings.playerSpeed * 200);
+        this.enemies.setVelocityX(-gameSettings.playerSpeed * 200);
         
         this.player.play("player-run_anim");
     }
@@ -296,7 +304,9 @@ class Scene3 extends Phaser.Scene {
         platform.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 200);
         this.platformPool.add(platform);
         this.decoratePlatform(platform);
-        this.props.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 200);
+        if (this.timePassed - this.lastEnemySpawned > gameSettings.enemySpawnRate * 60) {
+            this.spawnEnemy(platform);
+        }
     }
 
     decoratePlatform(platform) {
@@ -312,6 +322,33 @@ class Scene3 extends Phaser.Scene {
         this.addRandomProps(platformX, platformLength, maxRocks, ["rock"]);
         this.addRandomProps(platformX, platformLength, maxTrees, ["pine", "palm", "tree", "tree2"]);
         this.addRandomProps(platformX, platformLength, maxShrooms, ["shrooms"]);
+        
+        this.props.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 200);
+    }
+
+    spawnEnemy(platform) {        
+        this.lastEnemySpawned = this.timePassed;
+        var platformLength = platform.getChildren().length;
+        var lastBlock = platform.getChildren()[platformLength - 1];
+        
+        var enemyNames = ["enemy-eagle", "enemy-possum", "enemy-frog-jump"];
+        var enemyName = enemyNames[Phaser.Math.Between(0, enemyNames.length - 1)];
+        var enemyY = config.height;
+        switch (enemyName) {
+            case "enemy-eagle":
+                enemyY -= 100;
+                break;
+            case "enemy-frog-jump":
+                enemyY -= 64;
+                break;
+            case "enemy-possum":
+                enemyY -= 60;
+                break;
+        }
+
+        var enemy = new Enemy(this, lastBlock.x - 50, enemyY, enemyName);
+        this.enemies.add(enemy);
+        enemy.body.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 200);
     }
 
     addRandomProps(platformX, platformLength, maxProps, propNames) {
@@ -346,7 +383,7 @@ class Scene3 extends Phaser.Scene {
         this.time.delayedCall(1000, function() {
             this.player.play("player-idle_anim");
             if (skipMonologue) {
-                this.unPauseGame();
+                this.unpauseGame();
                 return;
             }
 
@@ -354,7 +391,7 @@ class Scene3 extends Phaser.Scene {
 
             this.time.delayedCall(6000, function() {
                 this.playerSpeak("I hope I won't run into too many\nanimals with math questions again!", 6000);
-                this.unPauseGame();
+                this.unpauseGame();
             }, [], this);
         }, [], this);
     }

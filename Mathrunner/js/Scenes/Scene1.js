@@ -45,7 +45,7 @@ class Scene1 extends Phaser.Scene {
         this.createAnimations("item", ["cherry", "gem"], gameSettings.fps, -1);
         this.createAnimations("player", ["idle", "run"], gameSettings.fps, -1);
         this.createAnimations("player", ["hurt", "jump"], gameSettings.fps, 0);
-        this.createAnimations("enemy", ["eagle", "frog-idle", "frog-jump", "possum"], gameSettings.fps, -1);
+        this.createAnimations("enemy", ["eagle", "frog-idle", "frog-jump", "possum"], gameSettings.fps / 2, -1);
         this.createAnimation("enemy", "death-explosion", gameSettings.fps, 0, true);
     }
 
@@ -68,11 +68,11 @@ class Scene1 extends Phaser.Scene {
         }
     }
 
-    createAnimation(prefix, name, frameRate, repeat, shouldHideOnComplete = false) {
+    createAnimation(prefix, name, fps, repeat, shouldHideOnComplete = false) {
         this.anims.create({
             key: prefix + "-" + name + "_anim",
             frames: this.anims.generateFrameNumbers(prefix + "-" + name),
-            frameRate: frameRate,
+            frameRate: fps,
             repeat: repeat,
             hideOnComplete: shouldHideOnComplete
         });
