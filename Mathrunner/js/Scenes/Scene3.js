@@ -1,7 +1,7 @@
-// TO DO:
-// - Add player jump animation
-
-
+// TO DO: 
+// Add questions when enemies arrive
+// Add spike traps 50% chance of appearing if platform is longer than 30 blocks
+// Add items, 50% chance of appearing for every 10 blocks of platform length
 class Scene3 extends Phaser.Scene {
     constructor() {
         super("playGame");
@@ -11,6 +11,7 @@ class Scene3 extends Phaser.Scene {
         this.paused = true;
         this.timePassed = 0;
         this.score = 0;
+        this.penalty = 0;
         this.lastEnemySpawned = 0;
 
         this.background = this.add.tileSprite(0, 0, config.width, config.height, 'background');
@@ -42,8 +43,8 @@ class Scene3 extends Phaser.Scene {
         // score keeping
         this.timePassed += 1;
         if (this.timePassed % 10 == 0) {
-            this.score = Math.floor(this.timePassed);
-            this.scoreLabel.text = "SCORE: " + this.zeroPad(this.score, 6);
+            this.score = Math.floor(this.timePassed * gameSettings.scorePerSecond / 60);
+            this.updateScoreLabel();
         }
 
         // move the background
@@ -77,6 +78,11 @@ class Scene3 extends Phaser.Scene {
             var enemy = this.enemies.getChildren()[i];
             enemy.update();
         }
+    }
+
+    updateScoreLabel() {
+        var labelText = this.score - this.penalty < 0 ? 0 : this.score - this.penalty;
+        this.scoreLabel.text = "SCORE: " + this.zeroPad(labelText, 6);
     }
 
     createTopBar() {
@@ -310,7 +316,7 @@ class Scene3 extends Phaser.Scene {
 
         // decorate the platform
         this.decoratePlatform(platform);
-        if (this.timePassed - this.lastEnemySpawned > gameSettings.enemySpawnRate * 60) {
+        if (this.enemies.getChildren().length == 0 && this.timePassed - this.lastEnemySpawned > gameSettings.enemySpawnRate * 60) {
             this.spawnEnemy(platform);
         }
     }
@@ -319,10 +325,10 @@ class Scene3 extends Phaser.Scene {
         var platformLength = platform.getChildren().length;
         var platformX = platform.getChildren()[0].x;
 
-        var maxBushes = Math.floor(platformLength / 10);
-        var maxTrees = Math.floor(platformLength / 10);
-        var maxRocks = Math.floor(platformLength / 15);
-        var maxShrooms = Math.floor(platformLength / 15);
+        var maxBushes = gameSettings.propDensity * Math.floor(platformLength / 10);
+        var maxTrees = gameSettings.propDensity * Math.floor(platformLength / 10);
+        var maxRocks = gameSettings.propDensity * Math.floor(platformLength / 15);
+        var maxShrooms = gameSettings.propDensity * Math.floor(platformLength / 15);
 
         this.addRandomProps(platformX, platformLength, maxBushes, ["bush"]);
         this.addRandomProps(platformX, platformLength, maxRocks, ["rock"]);
@@ -361,6 +367,9 @@ class Scene3 extends Phaser.Scene {
         for (var i = 0; i < Phaser.Math.Between(Math.floor(maxProps/2), maxProps); i++) {
             var propName = propNames[Phaser.Math.Between(0, propNames.length - 1)];
             var prop = createProp(this, propName, platformX + Phaser.Math.Between(50, platformLength * 32 - 100));
+            if (Phaser.Math.Between(0, 1) == 1) {
+                prop.flipX = true;
+            }
             prop.body.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 200);        
         }
     }
@@ -406,6 +415,19 @@ class Scene3 extends Phaser.Scene {
                 this.player.play("player-run_anim");
             }, [], this);
         }
+    }
+
+    playerHurt(scorePenalty = 0) {
+        console.log("old score: " + (this.score - this.penalty));
+        console.log("penalty: " + scorePenalty);
+        this.penalty += scorePenalty;
+        this.updateScoreLabel();
+        console.log("new score: " + (this.score - this.penalty));
+        this.player.play("player-hurt_anim");
+        this.player.setVelocityY(-gameSettings.playerJumpHeight);
+        this.time.delayedCall(1200, function() {
+            this.player.play(this.paused ? "player-idle_anim" : "player-run_anim");
+        }, [], this);
     }
 
     playerSpeak(text, duration = 5000, fadeInSpeed = 1000, fadeOutSpeed = 500) {

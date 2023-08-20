@@ -34,12 +34,13 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             repeat: 0,
             onComplete: () => {
                 // enemy arrived at player
+                this.scene.playerHurt(gameSettings.questionPenalty);
                 if (this.enemyName == "enemy-frog-jump") {
                     this.y = config.height - 54;
                     this.play("enemy-frog-idle_anim");
                 }
-                this.scene.time.delayedCall(3000, () => {
-                    // enemy leaving    
+                this.scene.time.delayedCall(5000, () => {
+                    // enemy leaving
                     if (this.enemyName == "enemy-frog-jump") {
                         this.y = config.height - 64;
                         this.play("enemy-frog-jump_anim");

@@ -1,12 +1,23 @@
 var gameSettings = {
+    // score calculation
+    scorePerSecond: 30,
+    cherryBonus: 50,
+    gemBonus: 100,
+    questionBonus: 2000,
+    questionPenalty: 500,
+    trapPenalty: 1000,
+    // player settings
     playerSpeed: 1,
     playerJumpHeight: 300,
     playerGravity: 500,
+    // level generation
     platformLengthMin: 20,
     platformLengthMax: 50,
     platformGapMin: 120,
     platformGapMax: 240,
+    propDensity: 1,
     enemySpawnRate: 30, // in seconds
+    // misc
     fps: 10 // spritesheet fps
 }
 
@@ -42,6 +53,9 @@ createPlatform = function(scene, length, startingX = 0, physicsEnabled = true) {
     for (var i = 0; i < length; i++) {
         var block = platform.create(i * blockWidth + startingX, scene.game.config.height - 15, "platform_grass" + Phaser.Math.Between(1, 3));
         block.setScale(2);
+        if (Phaser.Math.Between(0, 1) == 1) {
+            block.flipX = true;
+        }
         if (physicsEnabled) {
             scene.physics.world.enable(block);
             block.body.immovable = true;

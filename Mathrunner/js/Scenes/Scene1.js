@@ -44,7 +44,8 @@ class Scene1 extends Phaser.Scene {
         // Animations
         this.createAnimations("item", ["cherry", "gem"], gameSettings.fps, -1);
         this.createAnimations("player", ["idle", "run"], gameSettings.fps, -1);
-        this.createAnimations("player", ["hurt", "jump"], gameSettings.fps / 4, 0);
+        this.createAnimations("player", ["jump"], gameSettings.fps / 4, 0);
+        this.createAnimations("player", ["hurt"], gameSettings.fps * 2, 0);
         this.createAnimations("enemy", ["eagle", "frog-idle", "frog-jump", "possum"], gameSettings.fps / 2, -1);
     }
 
