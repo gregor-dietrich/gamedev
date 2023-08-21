@@ -22,7 +22,9 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             return;
         }
         this.spottedPlayer = true;
-        this.scene.questionSound.play();
+        if (this.scene.questionSound != null) {
+            this.scene.questionSound.play();
+        }
         
         // enemy spotted player
         this.scene.pauseGame();
@@ -35,7 +37,9 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             repeat: 0,
             onComplete: () => {
                 // enemy arrived at player
-                this.scene.wrongSound.play();
+                if (this.scene.wrongSound != null) {
+                    this.scene.wrongSound.play();
+                }
                 this.scene.time.delayedCall(1000, () => {
                     this.scene.playerHurt(gameSettings.questionPenalty);
                     if (this.enemyName == "enemy-frog-jump") {

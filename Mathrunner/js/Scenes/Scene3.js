@@ -10,7 +10,7 @@ class Scene3 extends Phaser.Scene {
     }
 
     create() {
-        this.paused = true;
+        this.gamePaused = true;
         this.timePassed = 0;
         this.score = 0;
         this.penalty = 0;
@@ -31,16 +31,15 @@ class Scene3 extends Phaser.Scene {
 
         this.createFirstPlatform();
         this.addPlatform();
-        this.addPlatform();  
+        this.addPlatform();
     }
 
     update() {
         if (this.player.y > config.height - 24) {
-            this.gameoverSound.play();
             this.gameOver();
         }
 
-        if (this.paused) { 
+        if (this.gamePaused) { 
             return;
         }
 
@@ -90,9 +89,27 @@ class Scene3 extends Phaser.Scene {
     }
 
     createSounds() {
-        for (var i = 0; i < audioFiles.length; i++) {
-            this[audioFiles[i] + "Sound"] = this.sound.add("audio_" + audioFiles[i], musicConfig);
+        this.jumpSound = null;
+        this.hurtSound = null;
+        this.cherrySound = null;
+        this.gemSound = null;
+        this.correctSound = null;
+        this.wrongSound = null;
+        this.questionSound = null;
+        this.bgmSound = null;
+        // don't load audio if iOS
+        if (this.sys.game.device.os.iOS) {
+            return;
         }
+
+        this.jumpSound = this.sound.add("audio_jump", sfxConfig);
+        this.hurtSound = this.sound.add("audio_hurt", sfxConfig);
+        this.cherrySound = this.sound.add("audio_cherry", sfxConfig);
+        this.gemSound = this.sound.add("audio_gem", sfxConfig);
+        this.correctSound = this.sound.add("audio_correct", sfxConfig);
+        this.wrongSound = this.sound.add("audio_wrong", sfxConfig);
+        this.questionSound = this.sound.add("audio_question", sfxConfig);
+        this.bgmSound = this.sound.add("audio_bgm", musicConfig);
     }
 
     createTopBar() {
@@ -128,7 +145,7 @@ class Scene3 extends Phaser.Scene {
         this.pauseButton.depth = 2;
         this.pauseButton.setInteractive();
         this.pauseButton.on('pointerdown', function(pointer) {
-            if (!this.paused) {
+            if (!this.gamePaused) {
                 this.playerPause();
             }
         }, this);
@@ -205,24 +222,24 @@ class Scene3 extends Phaser.Scene {
     }
 
     gameOver() {
+        this.pauseGame();
+
         this.time.delayedCall(2000, function() {
-            this.pauseGame();
+            var title = this.add.bitmapText(config.width / 2 - 84, 50, "pixelFont", "GAME OVER", 48);
+            title.tint = 0x000000;
+
+            var restartLabel = this.add.bitmapText(config.width / 2 - 80, 90, "pixelFont", "Click/Tap to restart", 24);
+            restartLabel.alpha = 0;
+            restartLabel.tint = 0x000000;
             
             this.player.body.enable = false;
             this.player.body.gravity.y = 0;
             this.player.setVelocityX(0);
-            this.player.setVelocityY(0);            
-
-            var title = this.add.bitmapText(config.width / 2 - 84, 50, "pixelFont", "GAME OVER", 48);
-            title.tint = 0x000000;
-
-            var restart = this.add.bitmapText(config.width / 2 - 80, 90, "pixelFont", "Click/Tap to Restart", 24);
-            restart.alpha = 0;
-            restart.tint = 0x000000;
+            this.player.setVelocityY(0);
 
             this.time.delayedCall(1000, function() {
                 this.tweens.add({
-                    targets: restart,
+                    targets: restartLabel,
                     alpha: 1,
                     duration: 1500,
                     ease: 'Power2',
@@ -231,65 +248,14 @@ class Scene3 extends Phaser.Scene {
                 });
 
                 this.input.on('pointerdown', function(pointer) {
+                    this.bgmSound.stop();
+                    title.destroy();
+                    restartLabel.destroy();
+                    this.input.removeAllListeners();
                     this.scene.start("playGame");
                 }, this);
             }, [], this);
         }, [], this);        
-    }
-
-    playerPause() {
-        this.pauseGame();
-
-        var gamePausedText = this.add.bitmapText(config.width / 2 - 100, 50, "pixelFont", "GAME PAUSED", 48);
-        gamePausedText.tint = 0x000000;
-
-        var unpauseText = this.add.bitmapText(config.width / 2 - 80, 90, "pixelFont", "Click/Tap to resume", 24);
-        unpauseText.alpha = 0;
-        unpauseText.tint = 0x000000;
-
-        this.time.delayedCall(1000, function() {
-            this.tweens.add({
-                targets: unpauseText,
-                alpha: 1,
-                duration: 1500,
-                ease: 'Power2',
-                yoyo: true,
-                repeat: -1
-            });
-
-            this.input.on('pointerdown', function(pointer) {
-                this.unpauseGame();
-                gamePausedText.destroy();
-                unpauseText.destroy();
-                this.input.removeAllListeners();
-            }, this);
-        }, [], this);
-    }
-
-    pauseGame() {
-        this.paused = true;
-        this.hideTopBar();
-
-        for (var i = 0; i < this.platformPool.getChildren().length; i++) {
-            this.platformPool.getChildren()[i].setVelocityX(0);
-        }    
-        this.props.setVelocityX(0);
-        this.enemies.setVelocityX(0);
-
-        this.player.play("player-idle_anim");
-    }
-
-    unpauseGame() {
-        this.paused = false;
-        this.showTopBar();
-
-        for (var i = 0; i < this.platformPool.getChildren().length; i++) {
-            this.platformPool.getChildren()[i].setVelocityX(-gameSettings.playerSpeed * 200);
-        }
-        this.props.setVelocityX(-gameSettings.playerSpeed * 200);
-        this.enemies.setVelocityX(-gameSettings.playerSpeed * 200);
-        
-        this.player.play("player-run_anim");
     }
 
     createFirstPlatform() {
@@ -321,7 +287,7 @@ class Scene3 extends Phaser.Scene {
         // add a new platform with length between 20 and 50
         var platformLength = Phaser.Math.Between(gameSettings.platformLengthMin, gameSettings.platformLengthMax);
         var platform = createPlatform(this, platformLength, nextPlatformX, true);
-        platform.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 200);
+        platform.setVelocityX(this.gamePaused ? 0 : -gameSettings.playerSpeed * 200);
         this.platformPool.add(platform);
 
         // decorate the platform
@@ -345,7 +311,7 @@ class Scene3 extends Phaser.Scene {
         this.addRandomProps(platformX, platformLength, maxTrees, ["pine", "palm", "tree", "tree2"]);
         this.addRandomProps(platformX, platformLength, maxShrooms, ["shrooms"]);
         
-        this.props.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 200);
+        this.props.setVelocityX(this.gamePaused ? 0 : -gameSettings.playerSpeed * 200);
     }
 
     spawnEnemy(platform) {        
@@ -370,7 +336,7 @@ class Scene3 extends Phaser.Scene {
 
         var enemy = new Enemy(this, lastBlock.x - 50, enemyY, enemyName);
         this.enemies.add(enemy);
-        enemy.body.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 200);
+        enemy.body.setVelocityX(this.gamePaused ? 0 : -gameSettings.playerSpeed * 200);
     }
 
     addRandomProps(platformX, platformLength, maxProps, propNames) {
@@ -380,7 +346,7 @@ class Scene3 extends Phaser.Scene {
             if (Phaser.Math.Between(0, 1) == 1) {
                 prop.flipX = true;
             }
-            prop.body.setVelocityX(this.paused ? 0 : -gameSettings.playerSpeed * 200);        
+            prop.body.setVelocityX(this.gamePaused ? 0 : -gameSettings.playerSpeed * 200);        
         }
     }
 
@@ -413,6 +379,9 @@ class Scene3 extends Phaser.Scene {
             this.time.delayedCall(6000, function() {
                 this.playerSpeak("I hope I won't run into too many\nanimals with math questions again!", 6000);
                 this.unpauseGame();
+                if (this.bgmSound != null) {
+                    this.bgmSound.play();
+                }
             }, [], this);
         }, [], this);
     }
@@ -421,9 +390,11 @@ class Scene3 extends Phaser.Scene {
         if (this.player.body.touching.down) {
             this.player.setVelocityY(-gameSettings.playerJumpHeight);
             this.player.play("player-jump_anim");
-            this.jumpSound.play();
+            if (this.jumpSound != null) {
+                this.jumpSound.play();
+            }
             this.time.delayedCall(1200, function() {
-                this.player.play(this.paused ? "player-idle_anim" : "player-run_anim");
+                this.player.play(this.gamePaused ? "player-idle_anim" : "player-run_anim");
             }, [], this);
         }
     }
@@ -432,10 +403,12 @@ class Scene3 extends Phaser.Scene {
         this.penalty += scorePenalty;
         this.updateScoreLabel();
         this.player.play("player-hurt_anim");
-        this.hurtSound.play();
+        if (this.hurtSound != null) {
+            this.hurtSound.play();
+        }
         this.player.setVelocityY(-gameSettings.playerJumpHeight);
         this.time.delayedCall(1200, function() {
-            this.player.play(this.paused ? "player-idle_anim" : "player-run_anim");
+            this.player.play(this.gamePaused ? "player-idle_anim" : "player-run_anim");
         }, [], this);
     }
 
@@ -462,5 +435,61 @@ class Scene3 extends Phaser.Scene {
                 repeat: 0
             });
         }, [], this);
+    }
+
+    playerPause() {
+        this.pauseGame();
+
+        var gamePausedText = this.add.bitmapText(config.width / 2 - 100, 50, "pixelFont", "GAME PAUSED", 48);
+        gamePausedText.tint = 0x000000;
+
+        var unpauseText = this.add.bitmapText(config.width / 2 - 80, 90, "pixelFont", "Click/Tap to resume", 24);
+        unpauseText.alpha = 0;
+        unpauseText.tint = 0x000000;
+
+        this.time.delayedCall(1000, function() {
+            this.tweens.add({
+                targets: unpauseText,
+                alpha: 1,
+                duration: 1500,
+                ease: 'Power2',
+                yoyo: true,
+                repeat: -1,
+                autoStart: true
+            });
+
+            this.input.on('pointerdown', function(pointer) {
+                this.unpauseGame();
+                gamePausedText.destroy();
+                unpauseText.destroy();
+                this.input.removeAllListeners();
+            }, this);
+        }, [], this);
+    }
+
+    pauseGame() {
+        this.gamePaused = true;
+        this.hideTopBar();
+
+        for (var i = 0; i < this.platformPool.getChildren().length; i++) {
+            this.platformPool.getChildren()[i].setVelocityX(0);
+        }    
+        this.props.setVelocityX(0);
+        this.enemies.setVelocityX(0);
+
+        this.player.play("player-idle_anim");
+    }
+
+    unpauseGame() {
+        this.gamePaused = false;
+        this.showTopBar();
+
+        for (var i = 0; i < this.platformPool.getChildren().length; i++) {
+            this.platformPool.getChildren()[i].setVelocityX(-gameSettings.playerSpeed * 200);
+        }
+        this.props.setVelocityX(-gameSettings.playerSpeed * 200);
+        this.enemies.setVelocityX(-gameSettings.playerSpeed * 200);
+        
+        this.player.play("player-run_anim");
     }
 }

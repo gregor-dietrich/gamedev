@@ -21,13 +21,23 @@ var gameSettings = {
     fps: 10 // spritesheet fps
 }
 
-var musicConfig = {
+var sfxConfig = {
     mute: false,
     volume: 1,
     rate: 1,
     detune: 0,
     seek: 0,
     loop: false,
+    delay: 0
+}
+
+var musicConfig = {
+    mute: false,
+    volume: 0.5,
+    rate: 1,
+    detune: 0,
+    seek: 0,
+    loop: true,
     delay: 0
 }
 
@@ -116,10 +126,13 @@ window.onload = function() {
                 debug: false
             }
         },
+        audio: {
+            disableWebAudio: true
+        },
         scale: {
             mode: Phaser.Scale.FIT,
             autoCenter: Phaser.Scale.CENTER_BOTH
-            }
+        }
     };
     game = new Phaser.Game(config);
 }
