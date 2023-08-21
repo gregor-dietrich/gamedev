@@ -1,11 +1,13 @@
 // TO DO: 
 // Add questions when enemies arrive
+// Add final score to gameWin()
 // Add spike traps 50% chance of appearing if platform is longer than 30 blocks
 // Add items, 50% chance of appearing for every 10 blocks of platform length
 // Use questionSound as pauseSound
 // Add sounds: cherry, gem, correct answer, unpause(?), (new) question
 // Add more props
 // Improve decoration of platforms
+// Add arrival at the school
 
 class Scene3 extends Phaser.Scene {
     constructor() {
@@ -20,6 +22,9 @@ class Scene3 extends Phaser.Scene {
         this.platformsSpawned = 1;
         this.lastEnemyNames = [];
         this.lastEnemySpawned = "";
+
+        this.questions = Phaser.Utils.Array.Shuffle(this.cache.json.get("questions"));
+        this.questionsIndex = 0;
 
         this.background = this.add.tileSprite(0, 0, config.width, config.height, 'background');
         this.middleground = this.add.tileSprite(0, 120, config.width, config.height, 'middleground');
@@ -263,6 +268,45 @@ class Scene3 extends Phaser.Scene {
                 }, this);
             }, [], this);
         }, [], this);        
+    }
+
+    gameWin() {
+        if (!this.gamePaused) {
+            this.pauseGame();
+        }
+        
+        this.time.delayedCall(2000, function() {
+            var title = this.add.bitmapText(config.width / 2 - 84, 50, "pixelFont", "YOU WIN!", 48);
+            title.tint = 0x000000;
+
+            var restartLabel = this.add.bitmapText(config.width / 2 - 90, 90, "pixelFont", "Click/Tap to restart", 24);
+            restartLabel.alpha = 0;
+            restartLabel.tint = 0x000000;
+
+            this.player.body.enable = false;
+            this.player.body.gravity.y = 0;
+            this.player.setVelocityX(0);
+            this.player.setVelocityY(0);
+
+            this.time.delayedCall(1000, function() {
+                this.tweens.add({
+                    targets: restartLabel,
+                    alpha: 1,
+                    duration: 1500,
+                    ease: 'Power2',
+                    yoyo: true,
+                    repeat: -1
+                });
+
+                this.input.on('pointerdown', function(pointer) {
+                    this.bgmSound.stop();
+                    title.destroy();
+                    restartLabel.destroy();
+                    this.input.removeAllListeners();
+                    this.scene.start("playGame");
+                }, this);
+            }, [], this);
+        }, [], this);
     }
 
     pauseGame() {

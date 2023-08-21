@@ -51,7 +51,10 @@ def zip_files(file_name: str, target_dir: str) -> str:
         # add index.html to the zip file
         zip_file.write(os.path.join(PROJECTROOT, "index.html"), arcname="index.html")
         # add all files in subfolders to the zip file
-        for sub_dir in ["css", "js", "assets"]:
+        sub_dirs: [str] = ["assets", "css", "js"]
+        if os.path.exists(os.path.join(PROJECTROOT, "data")):
+            sub_dirs.append("data")
+        for sub_dir in sub_dirs:
             for root, dirs, filenames in os.walk(os.path.join(PROJECTROOT, sub_dir)):
                 for filename in filenames:
                     zip_file.write(os.path.join(root, filename), arcname=os.path.join(root, filename).replace("\\", "/"))

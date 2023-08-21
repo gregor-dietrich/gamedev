@@ -8,6 +8,9 @@ class Scene1 extends Phaser.Scene {
     }
 
     preload() {
+        // Data
+        this.load.json("questions", "data/questions.json");
+
         // Font
         this.load.bitmapFont("pixelFont", "assets/font/font.png", "assets/font/font.xml");
 

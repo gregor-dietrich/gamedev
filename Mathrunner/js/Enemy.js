@@ -61,6 +61,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.scene = scene;
         this.spottedPlayer = false;
         this.enemyName = enemyName;
+        this.question = this.scene.questions[this.scene.questionsIndex];
         
         this.play(enemyName + "_anim");
         this.setScale(2);
@@ -100,6 +101,10 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
                 // enemy arrived at player
                 this.scene.time.delayedCall(2000, () => {
+                    // console.log(this.question["question"]);
+                    // console.log(this.question["correct"]);
+                    // console.log(this.question["wrong"]);
+
                     if (this.scene.wrongSound != null) {
                         this.scene.wrongSound.play();
                     }
@@ -120,10 +125,19 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
                                 ease: 'Linear',
                                 repeat: 0,
                                 onComplete: () => {
+                                    this.scene.questionsIndex++;
                                     this.scene.enemies.remove(this);
                                     this.destroy();
                                 }
-                            });                    
+                            });
+                            
+                            if (this.scene.questionsIndex >= this.scene.questions.length - 1) {
+                                for (var i = 1; i < this.scene.enemies.getChildren().length; i++) {
+                                    this.scene.enemies.getChildren()[i].destroy();
+                                }
+                                this.scene.gameWin();
+                                return;
+                            }
                             this.scene.unpauseGame();
                         }, null, this);
                     }, null, this);
