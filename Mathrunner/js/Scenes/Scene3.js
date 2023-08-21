@@ -2,8 +2,11 @@
 // Add questions when enemies arrive
 // Add spike traps 50% chance of appearing if platform is longer than 30 blocks
 // Add items, 50% chance of appearing for every 10 blocks of platform length
-// Add sounds: cherry, gem, correct answer
-// Add music
+// Use questionSound as pauseSound
+// Add sounds: cherry, gem, correct answer, unpause(?), (new) question
+// Add more props
+// Improve decoration of platforms
+
 class Scene3 extends Phaser.Scene {
     constructor() {
         super("playGame");
@@ -111,11 +114,7 @@ class Scene3 extends Phaser.Scene {
         this.bgmSound = this.sound.add("audio_bgm", musicConfig);
     }
 
-    updateScoreLabel() {        
-        if (this.penalty > this.score - this.penalty) {
-            this.penalty = 0;
-            this.score = 0;
-        }
+    updateScoreLabel() {
         var labelText = this.score - this.penalty < 0 ? 0 : this.score - this.penalty;
         this.scoreLabel.text = "SCORE: " + this.zeroPad(labelText, 6);
     }

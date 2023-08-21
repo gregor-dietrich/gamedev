@@ -49,6 +49,9 @@ playerJump = function(scene) {
 
 playerHurt = function(scene, scorePenalty = 0) {
     scene.penalty += scorePenalty;
+    if (scene.score - scene.penalty < 0) {
+        scene.penalty = scene.score;
+    }
     scene.updateScoreLabel();
     scene.player.play("player-hurt_anim");
     if (scene.hurtSound != null) {
