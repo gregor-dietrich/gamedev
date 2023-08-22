@@ -16,7 +16,7 @@ var gameSettings = {
     platformGapMin: 120,
     platformGapMax: 240,
     propDensity: 1,
-    enemySpawnFrequency: 1, // every Nth platform
+    enemySpawnFrequency: 5, // every Nth platform
     enemySpawnChance: 100, // in percent
     // misc
     fps: 10 // spritesheet fps
