@@ -1,10 +1,10 @@
 // TO DO: 
-// Add questions when enemies arrive
+// Improve visual presentation of questions
 // Add final score to gameWin()
 // Add spike traps 50% chance of appearing if platform is longer than 30 blocks
 // Add items, 50% chance of appearing for every 10 blocks of platform length
 // Use questionSound as pauseSound
-// Add sounds: cherry, gem, correct answer, unpause(?), (new) question
+// Add sounds: cherry, gem, unpause(?), (new) question
 // Add more props
 // Improve decoration of platforms
 // Add arrival at the school
@@ -406,4 +406,6 @@ class Scene3 extends Phaser.Scene {
             prop.body.setVelocityX(this.gamePaused ? 0 : -gameSettings.playerSpeed * 200);        
         }
     }
+
+    
 }

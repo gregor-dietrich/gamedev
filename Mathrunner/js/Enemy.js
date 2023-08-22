@@ -61,7 +61,6 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.scene = scene;
         this.spottedPlayer = false;
         this.enemyName = enemyName;
-        this.question = this.scene.questions[this.scene.questionsIndex];
         
         this.play(enemyName + "_anim");
         this.setScale(2);
@@ -101,48 +100,98 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
                 // enemy arrived at player
                 this.scene.time.delayedCall(2000, () => {
-                    // console.log(this.question["question"]);
-                    // console.log(this.question["correct"]);
-                    // console.log(this.question["wrong"]);
-
-                    if (this.scene.wrongSound != null) {
-                        this.scene.wrongSound.play();
-                    }
-
-                    this.scene.time.delayedCall(1000, () => {                        
-                        playerHurt(this.scene, gameSettings.questionPenalty);
-                        
-                        this.scene.time.delayedCall(2000, () => {
-                            // enemy leaving
-                            if (this.enemyName == "enemy-frog-jump") {
-                                this.y = config.height - 64;
-                                this.play("enemy-frog-jump_anim");
-                            }
-                            this.scene.tweens.add({
-                                targets: this,
-                                x: -100,
-                                duration: 1000,
-                                ease: 'Linear',
-                                repeat: 0,
-                                onComplete: () => {
-                                    this.scene.questionsIndex++;
-                                    this.scene.enemies.remove(this);
-                                    this.destroy();
-                                }
-                            });
-                            
-                            if (this.scene.questionsIndex >= this.scene.questions.length - 1) {
-                                for (var i = 1; i < this.scene.enemies.getChildren().length; i++) {
-                                    this.scene.enemies.getChildren()[i].destroy();
-                                }
-                                this.scene.gameWin();
-                                return;
-                            }
-                            this.scene.unpauseGame();
-                        }, null, this);
-                    }, null, this);
+                    this.askQuestion();
                 }, null, this);
             }
         });
+    }
+
+    leavePlayer(isAnswerCorrect) {
+        if (isAnswerCorrect) {
+            if (this.scene.correctSound != null) {
+                this.scene.correctSound.play();
+                this.scene.penalty -= gameSettings.questionBonus;
+            }
+        } else {
+            if (this.scene.wrongSound != null) {
+                this.scene.wrongSound.play();
+                this.scene.time.delayedCall(1000, () => {                        
+                    playerHurt(this.scene, gameSettings.questionPenalty);
+                }, null, this);
+            }
+        }
+
+        this.scene.time.delayedCall(3000, () => {
+            // enemy leaving
+            if (this.enemyName == "enemy-frog-jump") {
+                this.y = config.height - 64;
+                this.play("enemy-frog-jump_anim");
+            }
+            this.scene.tweens.add({
+                targets: this,
+                x: -100,
+                duration: 1000,
+                ease: 'Linear',
+                repeat: 0,
+                onComplete: () => {
+                    this.scene.questionsIndex++;
+                    this.scene.enemies.remove(this);
+                    this.scene.time.delayedCall(1000, () => {
+                        this.destroy();
+                    }, null, this);
+                }
+            });
+            
+            if (this.scene.questionsIndex >= this.scene.questions.length - 1) {
+                for (var i = 1; i < this.scene.enemies.getChildren().length; i++) {
+                    this.scene.enemies.getChildren()[i].destroy();
+                }
+                this.scene.gameWin();
+                return;
+            }
+            this.scene.unpauseGame();
+        }, null, this);
+    }
+
+    askQuestion() {
+        var question = this.scene.questions[this.scene.questionsIndex];
+
+        var questionText = this.scene.add.text(config.width / 2, 50, question["question"], {fontFamily: "Arial", fontSize: 24, color: "#000000", align: "center"});
+        questionText.setOrigin(0.5, 0.5);
+        questionText.depth = 2;
+        questionText.alpha = 0;
+        this.scene.tweens.add({
+            targets: questionText,
+            alpha: 1,
+            duration: 1000,
+            ease: 'Power2',
+            repeat: 0
+        });
+
+        var answers = Phaser.Utils.Array.Shuffle(question["wrong"].concat(question["correct"]));
+        var answerLabels = [];
+        for (var i = 0; i < question["wrong"].length + 1; i++) {
+            var answerLabel = this.scene.add.text(config.width / 2, 100 + i * 35, answers[i], {fontFamily: "Arial", fontSize: 24, color: "#000000"});
+            answerLabel.setOrigin(0.5, 0.5);
+            answerLabel.depth = 2;
+            answerLabel.alpha = 0;
+            this.scene.tweens.add({
+                targets: answerLabel,
+                alpha: 1,
+                duration: 1500 * (i + 2),
+                ease: 'Power2',
+                repeat: 0
+            });
+            answerLabel.setInteractive();
+            answerLabel.on('pointerdown', (pointer) => {
+                this.leavePlayer(answerLabel.text == question["correct"]);
+            
+                questionText.destroy();
+                for (var i = 0; i < answerLabels.length; i++) {
+                    answerLabels[i].destroy();
+                }
+            }, answerLabel);
+            answerLabels.push(answerLabel);
+        }
     }
 }
