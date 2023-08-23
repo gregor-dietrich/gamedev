@@ -115,11 +115,11 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         questionBackground.alpha = 0;
         questionBackground.fillStyle(0x000000, 1);
         questionBackground.beginPath();
-        questionBackground.moveTo(5,20);
-        questionBackground.lineTo(config.width - 5, 20);
+        questionBackground.moveTo(5, 5);
+        questionBackground.lineTo(config.width - 5, 5);
         questionBackground.lineTo(config.width - 5, 220);
         questionBackground.lineTo(5, 220);
-        questionBackground.lineTo(5, 20);
+        questionBackground.lineTo(5, 5);
         questionBackground.alpha = 0;
         questionBackground.closePath();
         questionBackground.fillPath();
@@ -131,7 +131,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             repeat: 0
         });
 
-        var questionText = this.scene.add.text(config.width / 2, 50, question["question"], {fontFamily: "Arial", fontSize: textSize + 6, color: textColor, fontStyle: "bold", align: "center"});
+        var questionText = this.scene.add.text(config.width / 2, 35, question["question"], {fontFamily: "Arial", fontSize: textSize + 6, color: textColor, fontStyle: "bold", align: "center"});
         // make bold
         questionText.setOrigin(0.5, 0.5);
         questionText.depth = 2;
