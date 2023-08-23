@@ -12,7 +12,7 @@
 // Add arrival at the school
 
 var gameSettings = {
-    language: "ph",
+    language: "en",
     // score calculation
     scorePerSecond: 300,
     cherryBonus: 500,
