@@ -9,7 +9,9 @@ class Scene1 extends Phaser.Scene {
 
     preload() {
         // Data
-        this.load.json("questions", "data/questions.json");
+        this.load.json("questions_de", "loc/de/questions.json");
+        this.load.json("questions_en", "loc/en/questions.json");
+        this.load.json("questions_ph", "loc/ph/questions.json");
 
         // Font
         this.load.bitmapFont("pixelFont", "assets/font/font.png", "assets/font/font.xml");

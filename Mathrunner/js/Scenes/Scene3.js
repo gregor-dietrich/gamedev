@@ -12,7 +12,7 @@ class Scene3 extends Phaser.Scene {
         this.lastEnemyNames = [];
         this.lastEnemySpawned = "";
 
-        this.questions = Phaser.Utils.Array.Shuffle(this.cache.json.get("questions"));
+        this.questions = Phaser.Utils.Array.Shuffle(this.cache.json.get("questions_" + gameSettings.language));
         this.questionsIndex = 0;
 
         this.background = this.add.tileSprite(0, 0, config.width, config.height, 'background');
