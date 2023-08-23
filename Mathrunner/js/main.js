@@ -1,11 +1,24 @@
+// TO DO: 
+// Improve visual presentation of questions
+// Display point gain/loss
+// Add final score to gameWin()
+// Add spike traps 50% chance of appearing if platform is longer than 30 blocks
+// Add items, 50% chance of appearing for every 10 blocks of platform length
+// Use questionSound as pauseSound
+// Add sounds: cherry, gem, unpause(?), (new) question
+// Add background music intro before the loop
+// Add more props
+// Improve decoration of platforms
+// Add arrival at the school
+
 var gameSettings = {
     // score calculation
-    scorePerSecond: 30,
-    cherryBonus: 50,
-    gemBonus: 100,
-    questionBonus: 2000,
-    questionPenalty: 500,
-    trapPenalty: 1000,
+    scorePerSecond: 300,
+    cherryBonus: 500,
+    gemBonus: 1000,
+    questionBonus: 20000,
+    questionPenalty: 15000,
+    trapPenalty: 10000,
     // player settings
     playerSpeed: 1,
     playerJumpHeight: 300,
@@ -16,7 +29,7 @@ var gameSettings = {
     platformGapMin: 120,
     platformGapMax: 240,
     propDensity: 1,
-    enemySpawnFrequency: 5, // every Nth platform
+    enemySpawnFrequency: 1, // every Nth platform
     enemySpawnChance: 100, // in percent
     // misc
     fps: 10 // spritesheet fps

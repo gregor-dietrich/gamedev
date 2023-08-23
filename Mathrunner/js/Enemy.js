@@ -106,6 +106,139 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
+    askQuestion() {
+        var question = this.scene.questions[this.scene.questionsIndex];   
+        var textColor = "#FFFFFF";
+        var textSize = 18;
+
+        var questionBackground = this.scene.add.graphics();
+        questionBackground.alpha = 0;
+        questionBackground.fillStyle(0x000000, 1);
+        questionBackground.beginPath();
+        questionBackground.moveTo(5,20);
+        questionBackground.lineTo(config.width - 5, 20);
+        questionBackground.lineTo(config.width - 5, 220);
+        questionBackground.lineTo(5, 220);
+        questionBackground.lineTo(5, 20);
+        questionBackground.alpha = 0;
+        questionBackground.closePath();
+        questionBackground.fillPath();
+        this.scene.tweens.add({
+            targets: questionBackground,
+            alpha: 0.5,
+            duration: 1000,
+            ease: 'Power4',
+            repeat: 0
+        });
+
+        var questionText = this.scene.add.text(config.width / 2, 50, question["question"], {fontFamily: "Arial", fontSize: textSize + 6, color: textColor, fontStyle: "bold", align: "center"});
+        // make bold
+        questionText.setOrigin(0.5, 0.5);
+        questionText.depth = 2;
+        questionText.alpha = 0;
+        this.scene.tweens.add({
+            targets: questionText,
+            alpha: 1,
+            duration: 1000,
+            ease: 'Power4',
+            repeat: 0
+        });
+
+        var answers = Phaser.Utils.Array.Shuffle(question["wrong"].concat([question["correct"]]));
+
+        var answerLabel1 = this.scene.add.text(config.width / 2, 90, "A) " + answers[0], {fontFamily: "Arial", fontSize: textSize, color: textColor, fontStyle: "bold"});
+        answerLabel1.setOrigin(0.5, 0.5);
+        answerLabel1.depth = 2;
+        answerLabel1.alpha = 0;
+        this.scene.tweens.add({
+            targets: answerLabel1,
+            alpha: 1,
+            duration: 1000,
+            ease: 'Power4',
+            repeat: 0
+        });    
+
+        var answerLabel2 = this.scene.add.text(config.width / 2, 125, "B) " + answers[1], {fontFamily: "Arial", fontSize: textSize, color: textColor, fontStyle: "bold"});
+        answerLabel2.setOrigin(0.5, 0.5);
+        answerLabel2.depth = 2;
+        answerLabel2.alpha = 0;
+        this.scene.tweens.add({
+            targets: answerLabel2,
+            alpha: 1,
+            duration: 1000,
+            ease: 'Power4',
+            repeat: 0
+        });
+
+        var answerLabel3 = this.scene.add.text(config.width / 2, 160, "C) " + answers[2], {fontFamily: "Arial", fontSize: textSize, color: textColor, fontStyle: "bold"});
+        answerLabel3.setOrigin(0.5, 0.5);
+        answerLabel3.depth = 2;
+        answerLabel3.alpha = 0;
+        this.scene.tweens.add({
+            targets: answerLabel3,
+            alpha: 1,
+            duration: 1000,
+            ease: 'Power4',
+            repeat: 0
+        });
+        
+        var answerLabel4 = this.scene.add.text(config.width / 2, 195, "D) " + answers[3], {fontFamily: "Arial", fontSize: textSize, color: textColor, fontStyle: "bold"});
+        answerLabel4.setOrigin(0.5, 0.5);
+        answerLabel4.depth = 2;
+        answerLabel4.alpha = 0;
+        this.scene.tweens.add({
+            targets: answerLabel4,
+            alpha: 1,
+            duration: 5000,
+            ease: 'Power4',
+            repeat: 0
+        });
+
+        answerLabel1.setInteractive();
+        answerLabel1.on('pointerdown', (pointer) => {
+            this.leavePlayer(answerLabel1.text.substring(3) == question["correct"]);
+            questionBackground.destroy();
+            questionText.destroy();
+            answerLabel1.destroy();
+            answerLabel2.destroy();
+            answerLabel3.destroy();
+            answerLabel4.destroy();
+        }, this);
+
+        answerLabel2.setInteractive();
+        answerLabel2.on('pointerdown', (pointer) => {
+            this.leavePlayer(answerLabel2.text.substring(3) == question["correct"]);
+            questionBackground.destroy();
+            questionText.destroy();
+            answerLabel1.destroy();
+            answerLabel2.destroy();
+            answerLabel3.destroy();
+            answerLabel4.destroy();
+        }, this);
+
+        answerLabel3.setInteractive();
+        answerLabel3.on('pointerdown', (pointer) => {
+            this.leavePlayer(answerLabel3.text.substring(3) == question["correct"]);
+            questionBackground.destroy();
+            questionText.destroy();
+            answerLabel1.destroy();
+            answerLabel2.destroy();
+            answerLabel3.destroy();
+            answerLabel4.destroy();
+        }, this);
+
+        answerLabel4.setInteractive();   
+        answerLabel4.on('pointerdown', (pointer) => {
+            this.leavePlayer(answerLabel4.text.substring(3) == question["correct"]);
+            questionBackground.destroy();
+            questionText.destroy();
+            answerLabel1.destroy();
+            answerLabel2.destroy();
+            answerLabel3.destroy();
+            answerLabel4.destroy();
+        }, this);
+    }
+
     leavePlayer(isAnswerCorrect) {
         if (isAnswerCorrect) {
             if (this.scene.correctSound != null) {
@@ -151,107 +284,5 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             }
             this.scene.unpauseGame();
         }, null, this);
-    }
-
-    askQuestion() {
-        var question = this.scene.questions[this.scene.questionsIndex];    
-        var questionText = this.scene.add.text(config.width / 2, 50, question["question"], {fontFamily: "Arial", fontSize: 24, color: "#000000", align: "center"});
-        questionText.setOrigin(0.5, 0.5);
-        questionText.depth = 2;
-        questionText.alpha = 0;
-        this.scene.tweens.add({
-            targets: questionText,
-            alpha: 1,
-            duration: 1000,
-            ease: 'Power2',
-            repeat: 0
-        });    
-
-        var answers = Phaser.Utils.Array.Shuffle(question["wrong"].concat([question["correct"]]));
-        var answerLabel1 = this.scene.add.text(config.width / 2, 100, answers[0], {fontFamily: "Arial", fontSize: 24, color: "#000000"});
-        answerLabel1.setOrigin(0.5, 0.5);
-        answerLabel1.depth = 2;
-        answerLabel1.alpha = 0;
-        this.scene.tweens.add({
-            targets: answerLabel1,
-            alpha: 1,
-            duration: 1500,
-            ease: 'Power2',
-            repeat: 0
-        });    
-
-        var answerLabel2 = this.scene.add.text(config.width / 2, 135, answers[1], {fontFamily: "Arial", fontSize: 24, color: "#000000"});
-        answerLabel2.setOrigin(0.5, 0.5);
-        answerLabel2.depth = 2;
-        answerLabel2.alpha = 0;
-        this.scene.tweens.add({
-            targets: answerLabel2,
-            alpha: 1,
-            duration: 3000,
-            ease: 'Power2',
-            repeat: 0
-        });
-
-        var answerLabel3 = this.scene.add.text(config.width / 2, 170, answers[2], {fontFamily: "Arial", fontSize: 24, color: "#000000"});
-        answerLabel3.setOrigin(0.5, 0.5);
-        answerLabel3.depth = 2;
-        answerLabel3.alpha = 0;
-        this.scene.tweens.add({
-            targets: answerLabel3,
-            alpha: 1,
-            duration: 4500,
-            ease: 'Power2',
-            repeat: 0
-        });    
-        
-        var answerLabel4 = this.scene.add.text(config.width / 2, 205, answers[3], {fontFamily: "Arial", fontSize: 24, color: "#000000"});
-        answerLabel4.setOrigin(0.5, 0.5);
-        answerLabel4.depth = 2;
-        answerLabel4.alpha = 0;
-        this.scene.tweens.add({
-            targets: answerLabel4,
-            alpha: 1,
-            duration: 6000,
-            ease: 'Power2',
-            repeat: 0
-        });
-    
-        answerLabel1.setInteractive();
-        answerLabel2.setInteractive();
-        answerLabel3.setInteractive();
-        answerLabel4.setInteractive();
-        answerLabel1.on('pointerdown', (pointer) => {
-            this.leavePlayer(answerLabel1.text == question["correct"]);    
-            questionText.destroy();
-            answerLabel1.destroy();
-            answerLabel2.destroy();
-            answerLabel3.destroy();
-            answerLabel4.destroy();
-        }, this);    
-        answerLabel2.on('pointerdown', (pointer) => {
-            this.leavePlayer(answerLabel2.text == question["correct"]);    
-            questionText.destroy();
-            answerLabel1.destroy();
-            answerLabel2.destroy();
-            answerLabel3.destroy();
-            answerLabel4.destroy();
-        }, this);    
-        answerLabel3.on('pointerdown', (pointer) => {
-            this.leavePlayer(answerLabel3.text == question["correct"]);    
-            questionText.destroy();
-            answerLabel1.destroy();
-            answerLabel2.destroy();
-            answerLabel3.destroy();
-            answerLabel4.destroy();
-        }, this);    
-        answerLabel4.on('pointerdown', (pointer) => {
-            this.leavePlayer(answerLabel4.text == question["correct"]);    
-             questionText.destroy();
-             answerLabel1.destroy();
-             answerLabel2.destroy();
-             answerLabel3.destroy();
-             answerLabel4.destroy();
-         }, this);
-    }
-    
+    }    
 }
