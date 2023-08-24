@@ -85,19 +85,6 @@ class Scene3 extends Phaser.Scene {
     }
 
     createSounds() {
-        this.jumpSound = null;
-        this.hurtSound = null;
-        this.cherrySound = null;
-        this.gemSound = null;
-        this.correctSound = null;
-        this.wrongSound = null;
-        this.questionSound = null;
-        this.bgmSound = null;
-        // don't load audio if iOS
-        if (this.sys.game.device.os.iOS) {
-            return;
-        }
-
         this.jumpSound = this.sound.add("audio_jump", sfxConfig);
         this.hurtSound = this.sound.add("audio_hurt", sfxConfig);
         this.cherrySound = this.sound.add("audio_cherry", sfxConfig);

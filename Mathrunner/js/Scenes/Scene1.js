@@ -59,7 +59,7 @@ class Scene1 extends Phaser.Scene {
     }
 
     loadAudio(name) {
-        this.load.audio("audio_" + name, ["assets/sounds/" + name + ".ogg"]);
+        this.load.audio("audio_" + name, ["assets/sounds/" + name + ".ogg", "assets/sounds/" + name + ".mp3"]);
     }
 
     loadImage(subDir, name) {
