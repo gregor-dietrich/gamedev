@@ -28,11 +28,11 @@ class Scene3 extends Phaser.Scene {
         this.createTopBar();
         createPlayer(this);
 
-        this.createFirstPlatform();
-        this.addPlatform();
-        this.addPlatform();
+        createFirstPlatform(this);
+        addPlatform(this);
+        addPlatform(this);
 
-        this.addRandomProps(0, 50, 10, ["bush"]);
+        addRandomProps(this, 0, 50, 10, ["bush"]);
     }
 
     update() {
@@ -65,7 +65,7 @@ class Scene3 extends Phaser.Scene {
         var firstPlatform = this.platformPool.getChildren()[0];
         if (firstPlatform.getChildren()[firstPlatform.getChildren().length - 1].x < -64) {
             this.platformPool.remove(firstPlatform);
-            this.addPlatform();
+            addPlatform(this);
 
             // clean up props
             for (var i = 0; i < this.props.getChildren().length; i++) {
@@ -93,11 +93,6 @@ class Scene3 extends Phaser.Scene {
         this.wrongSound = this.sound.add("audio_wrong", sfxConfig);
         this.questionSound = this.sound.add("audio_question", sfxConfig);
         this.bgmSound = this.sound.add("audio_bgm", musicConfig);
-    }
-
-    updateScoreLabel() {
-        var labelText = this.score - this.penalty < 0 ? 0 : this.score - this.penalty;
-        this.scoreLabel.text = "SCORE: " + this.zeroPad(labelText, 6);
     }
 
     createTopBar() {
@@ -137,14 +132,6 @@ class Scene3 extends Phaser.Scene {
                 playerPause(this);
             }
         }, this);
-    }
-
-    zeroPad(number, size) {
-        var stringNumber = String(number);
-        while(stringNumber.length < (size || 2)) {
-            stringNumber = "0" + stringNumber;
-        }
-        return stringNumber;
     }
 
     showTopBar() {
@@ -207,6 +194,45 @@ class Scene3 extends Phaser.Scene {
             ease: 'Power2',
             repeat: 0
         });
+    }
+
+    zeroPad(number, size) {
+        var stringNumber = String(number);
+        while(stringNumber.length < (size || 2)) {
+            stringNumber = "0" + stringNumber;
+        }
+        return stringNumber;
+    }
+
+    updateScoreLabel() {
+        var labelText = this.score - this.penalty < 0 ? 0 : this.score - this.penalty;
+        this.scoreLabel.text = "SCORE: " + this.zeroPad(labelText, 6);
+    }
+
+    pauseGame() {
+        this.gamePaused = true;
+        this.hideTopBar();
+
+        for (var i = 0; i < this.platformPool.getChildren().length; i++) {
+            this.platformPool.getChildren()[i].setVelocityX(0);
+        }    
+        this.props.setVelocityX(0);
+        this.enemies.setVelocityX(0);
+
+        this.player.play("player-idle_anim");
+    }
+
+    unpauseGame() {
+        this.gamePaused = false;
+        this.showTopBar();
+
+        for (var i = 0; i < this.platformPool.getChildren().length; i++) {
+            this.platformPool.getChildren()[i].setVelocityX(-gameSettings.playerSpeed * 200);
+        }
+        this.props.setVelocityX(-gameSettings.playerSpeed * 200);
+        this.enemies.setVelocityX(-gameSettings.playerSpeed * 200);
+        
+        this.player.play("player-run_anim");
     }
 
     gameOver() {
@@ -284,104 +310,4 @@ class Scene3 extends Phaser.Scene {
             }, [], this);
         }, [], this);
     }
-
-    pauseGame() {
-        this.gamePaused = true;
-        this.hideTopBar();
-
-        for (var i = 0; i < this.platformPool.getChildren().length; i++) {
-            this.platformPool.getChildren()[i].setVelocityX(0);
-        }    
-        this.props.setVelocityX(0);
-        this.enemies.setVelocityX(0);
-
-        this.player.play("player-idle_anim");
-    }
-
-    unpauseGame() {
-        this.gamePaused = false;
-        this.showTopBar();
-
-        for (var i = 0; i < this.platformPool.getChildren().length; i++) {
-            this.platformPool.getChildren()[i].setVelocityX(-gameSettings.playerSpeed * 200);
-        }
-        this.props.setVelocityX(-gameSettings.playerSpeed * 200);
-        this.enemies.setVelocityX(-gameSettings.playerSpeed * 200);
-        
-        this.player.play("player-run_anim");
-    }    
-
-    createFirstPlatform() {
-        this.platformPool.add(createPlatform(this, 70));
-        createProp(this, "bush", 100);
-        createProp(this, "bush", 1420);
-        createProp(this, "bush", 1650);
-        createProp(this, "bush", 2100);
-        createProp(this, "pine", 520);
-        createProp(this, "palm", 310);
-        createProp(this, "palm", 800);
-        createProp(this, "palm", 1510);
-        createProp(this, "palm", 1700);
-        createProp(this, "tree", 1120);
-        createProp(this, "tree", 2050);
-        createProp(this, "tree2", 1310);
-        createProp(this, "tree2", 2150);
-        createProp(this, "rock", 710);
-        createProp(this, "rock", 1750);
-        createProp(this, "shrooms", 760);
-        createProp(this, "shrooms", 1700);
-        if (gameSettings.enemySpawnFrequency == 1) {
-            spawnEnemy(this, this.platformPool.getChildren()[0]);
-        }
-    }
-
-    decoratePlatform(platform) {
-        var platformLength = platform.getChildren().length;
-        var platformX = platform.getChildren()[0].x;
-    
-        var maxBushes = gameSettings.propDensity * Math.floor(platformLength / 10);
-        var maxTrees = gameSettings.propDensity * Math.floor(platformLength / 10);
-        var maxRocks = gameSettings.propDensity * Math.floor(platformLength / 15);
-        var maxShrooms = gameSettings.propDensity * Math.floor(platformLength / 15);
-    
-        this.addRandomProps(platformX, platformLength, maxBushes, ["bush"]);
-        this.addRandomProps(platformX, platformLength, maxRocks, ["rock"]);
-        this.addRandomProps(platformX, platformLength, maxTrees, ["pine", "palm", "tree", "tree2"]);
-        this.addRandomProps(platformX, platformLength, maxShrooms, ["shrooms"]);
-        
-        this.props.setVelocityX(this.gamePaused ? 0 : -gameSettings.playerSpeed * 200);
-    }
-    
-    addPlatform() {
-        this.platformsSpawned += 1;
-
-        // get the last platform's last block's x position and add a random amount to it
-        var lastPlatform = this.platformPool.getChildren()[this.platformPool.getChildren().length - 1];
-        var nextPlatformX = lastPlatform.getChildren()[lastPlatform.getChildren().length - 1].x + Phaser.Math.Between(gameSettings.platformGapMin, gameSettings.platformGapMax);
-    
-        // add a new platform with length between 20 and 50
-        var platformLength = Phaser.Math.Between(gameSettings.platformLengthMin, gameSettings.platformLengthMax);
-        var platform = createPlatform(this, platformLength, nextPlatformX, true);
-        platform.setVelocityX(this.gamePaused ? 0 : -gameSettings.playerSpeed * 200);
-        this.platformPool.add(platform);
-    
-        // decorate the platform
-        this.decoratePlatform(platform);
-        if (this.platformsSpawned % gameSettings.enemySpawnFrequency == 0) {
-            spawnEnemy(this, platform);
-        }
-    }
-
-    addRandomProps(platformX, platformLength, maxProps, propNames) {
-        for (var i = 0; i < Phaser.Math.Between(Math.floor(maxProps/2), maxProps); i++) {
-            var propName = propNames[Phaser.Math.Between(0, propNames.length - 1)];
-            var prop = createProp(this, propName, platformX + Phaser.Math.Between(50, platformLength * 32 - 100));
-            if (Phaser.Math.Between(0, 1) == 1) {
-                prop.flipX = true;
-            }
-            prop.body.setVelocityX(this.gamePaused ? 0 : -gameSettings.playerSpeed * 200);        
-        }
-    }
-
-    
 }
