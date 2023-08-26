@@ -31,7 +31,6 @@ createPlatform = function(scene, length, startingX = 0, physicsEnabled = true) {
     return platform;
 }
 
-
 createProp = function(scene, propName, positionX) {
     var positionY = config.height;
     var scale = 1.5;

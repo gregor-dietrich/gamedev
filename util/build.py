@@ -3,38 +3,34 @@ LAUNCH: bool = True
 PACKAGE: bool = True
 
 import os
+import subprocess
 import zipfile
 
 
 def list_all_files() -> [str]:
     files: [str] = []
-    for root, dirs, filenames in os.walk(os.path.join(PROJECTROOT, "js")):
+    for root, dirs, filenames in os.walk(os.path.join(PROJECTROOT, "src")):
         for filename in filenames:
-            if not filename == "phaser.min.js":
-                files.append(os.path.join(root, filename).replace("\\", "/"))
+            files.append(os.path.join(root, filename).replace("\\", "/"))
     return files
 
 
-def generate_html(source: str) -> [str]:
+def generate_js() -> [str]:
+    ## combine all .js files in /src into one file
     content: [str] = []
     scripts: [str] = list_all_files()
-    # check if source is a file
-    if not os.path.exists(source) or os.path.isdir(source):
-        source = os.path.join("util", "template.html")
-        if not os.path.exists(source) or os.path.isdir(source):
-            raise FileNotFoundError(f"File not found: {source}")
-    # read source file
-    with open(source, mode="r", encoding="utf-8") as file:
-        for line in file:
-            if line.strip() == "</head>":
-                for script in scripts:
-                    script = script[1:] if script.startswith(".js") else script
-                    content.append(f'\t<script type="text/javascript" src="{script}"></script>\n')
-            content.append(line)
+    for script in scripts:
+        if script.endswith(".js"):
+            with open(script, mode="r", encoding="utf-8") as file:
+                content.append(f"// {script}\n")
+                for line in file:
+                    content.append(line)
     return content
 
 
-def write_html(content: [str], target: str = "index.html") -> None:
+def write_js(content: [str], target: str = "build/bundle.js") -> None:
+    if not os.path.exists(os.path.join(PROJECTROOT, "build")):
+        os.mkdir(os.path.join(PROJECTROOT, "build"))
     with open(os.path.join(PROJECTROOT, target), mode="w", encoding="utf-8") as file:
         file.writelines(content)
 
@@ -48,7 +44,7 @@ def zip_files(file_name: str, target_dir: str) -> str:
         # add index.html to the zip file
         zip_file.write(os.path.join(PROJECTROOT, "index.html"), arcname="index.html")
         # add all files in subfolders to the zip file
-        sub_dirs: [str] = ["assets", "css", "js", "lib", "loc"]
+        sub_dirs: [str] = ["assets", "css", "dist", "lib", "loc"]
         for sub_dir in sub_dirs:
             for root, dirs, filenames in os.walk(os.path.join(PROJECTROOT, sub_dir)):
                 for filename in filenames:
@@ -58,13 +54,27 @@ def zip_files(file_name: str, target_dir: str) -> str:
 
 if __name__ == "__main__":
     print(f"Building {PROJECTROOT}...")
-    content: [str] = generate_html("template.html")
-    write_html(content)
-    print("HTML file generated.")
+    content: [str] = generate_js()
+    write_js(content)
+    print("build/bundle.js generated.")
+    
+    print ("Running webpack...")
+    subprocess.run(["npx", "webpack", "--config", "webpack.config.js"], cwd="./", shell=True)
+    print("Webpack finished.")
+
     if LAUNCH:
         os.system("start http://localhost/" + PROJECTROOT )
         print("Project launched in browser.")
+    
     if PACKAGE:
         output: str = zip_files("Mathrunner.zip", "build");
         print(f"Packaging finished: {output}")
+    
+    os.remove(os.path.join(PROJECTROOT, "build/bundle.js"))
+    print("build/bundle.js deleted.")
+
+    if os.path.exists(os.path.join(PROJECTROOT, "build")) and len(os.listdir(os.path.join(PROJECTROOT, "build"))) == 0:
+        os.rmdir(os.path.join(PROJECTROOT, "build"))
+        print("build/ deleted.")
+
     print("All operations complete.")
