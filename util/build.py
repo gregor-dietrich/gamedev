@@ -1,6 +1,6 @@
-PROJECTROOT: str = "Mathrunner"
-LAUNCH: bool = False
-PACKAGE: bool = False
+PROJECTROOT: str = ""
+LAUNCH: bool = True
+PACKAGE: bool = True
 
 import os
 import zipfile
@@ -11,7 +11,7 @@ def list_all_files() -> [str]:
     for root, dirs, filenames in os.walk(os.path.join(PROJECTROOT, "js")):
         for filename in filenames:
             if not filename == "phaser.min.js":
-                files.append(os.path.join(root, filename).replace("\\", "/").replace(PROJECTROOT + "/", ""))
+                files.append(os.path.join(root, filename).replace("\\", "/"))
     return files
 
 
@@ -26,9 +26,6 @@ def generate_html(source: str) -> [str]:
     # read source file
     with open(source, mode="r", encoding="utf-8") as file:
         for line in file:
-            if line.strip() == "<title></title>":
-                content.append(f"\t<title>{PROJECTROOT}</title>\n")
-                continue
             if line.strip() == "</head>":
                 for script in scripts:
                     script = script[1:] if script.startswith(".js") else script
@@ -51,9 +48,7 @@ def zip_files(file_name: str, target_dir: str) -> str:
         # add index.html to the zip file
         zip_file.write(os.path.join(PROJECTROOT, "index.html"), arcname="index.html")
         # add all files in subfolders to the zip file
-        sub_dirs: [str] = ["assets", "css", "js"]
-        if os.path.exists(os.path.join(PROJECTROOT, "loc")):
-            sub_dirs.append("loc")
+        sub_dirs: [str] = ["assets", "css", "js", "lib", "loc"]
         for sub_dir in sub_dirs:
             for root, dirs, filenames in os.walk(os.path.join(PROJECTROOT, sub_dir)):
                 for filename in filenames:
@@ -70,6 +65,6 @@ if __name__ == "__main__":
         os.system("start http://localhost/" + PROJECTROOT )
         print("Project launched in browser.")
     if PACKAGE:
-        output: str = zip_files(PROJECTROOT + ".zip", "build");
+        output: str = zip_files("Mathrunner.zip", "build");
         print(f"Packaging finished: {output}")
     print("All operations complete.")
