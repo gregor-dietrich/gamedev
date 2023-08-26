@@ -1,6 +1,4 @@
 // TO DO: 
-// Display point gain/loss
-// Add final score to gameWin()
 // Improve visual presentation of questions further
 // Add spike traps 50% chance of appearing if platform is longer than 30 blocks
 // Add items, 50% chance of appearing for every 10 blocks of platform length

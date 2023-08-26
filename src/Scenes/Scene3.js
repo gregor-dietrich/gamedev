@@ -245,6 +245,8 @@ class Scene3 extends Phaser.Scene {
             var restartLabel = this.add.bitmapText(config.width / 2 - 80, 90, "pixelFont", "Click/Tap to restart", 24);
             restartLabel.alpha = 0;
             restartLabel.tint = 0x000000;
+
+            this.showScoreLabel(false);
             
             this.player.body.enable = false;
             this.player.body.gravity.y = 0;
@@ -285,6 +287,8 @@ class Scene3 extends Phaser.Scene {
             restartLabel.alpha = 0;
             restartLabel.tint = 0x000000;
 
+            this.showScoreLabel(true);
+
             this.player.body.enable = false;
             this.player.body.gravity.y = 0;
             this.player.setVelocityX(0);
@@ -309,5 +313,15 @@ class Scene3 extends Phaser.Scene {
                 }, this);
             }, [], this);
         }, [], this);
+    }
+
+    showScoreLabel(isWin) {
+        var scoreLabel = this.add.bitmapText(config.width / 2 - 88, 130, "pixelFont", "SCORE: " + this.zeroPad((this.score - this.penalty), 6), 36);
+        if (isWin) {
+            scoreLabel.x -= 10;
+        }
+        scoreLabel.tint = 0x000000;
+        scoreLabel.alpha = 1;
+        scoreLabel.depth = 2;
     }
 }

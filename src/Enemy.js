@@ -79,9 +79,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             return;
         }
         this.spottedPlayer = true;
-        if (this.scene.questionSound != null) {
-            this.scene.questionSound.play();
-        }
+        this.scene.questionSound.play();
         
         // enemy spotted player
         this.scene.pauseGame();
@@ -241,18 +239,16 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     leavePlayer(isAnswerCorrect) {
         if (isAnswerCorrect) {
-            if (this.scene.correctSound != null) {
-                this.scene.correctSound.play();
-                this.scene.penalty -= gameSettings.questionBonus;
-            }
+            this.scene.correctSound.play();
+            this.scene.penalty -= gameSettings.questionBonus;            
         } else {
-            if (this.scene.wrongSound != null) {
                 this.scene.wrongSound.play();
                 this.scene.time.delayedCall(1000, () => {                        
                     playerHurt(this.scene, gameSettings.questionPenalty);
                 }, null, this);
-            }
         }
+
+        playerPointGain(this.scene, isAnswerCorrect ? gameSettings.questionBonus : -gameSettings.questionPenalty);
 
         this.scene.time.delayedCall(3000, () => {
             // enemy leaving

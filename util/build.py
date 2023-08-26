@@ -57,13 +57,12 @@ def generate_html() -> [str]:
     return content
 
 
-def write_html(content: [str], target: str = "index.html"):
+def write_html(content: [str], target: str = "index.html") -> None:
     with open(os.path.join(PROJECTROOT, target), mode="w", encoding="utf-8") as file:
             file.writelines(content)
 
 
 def zip_files(file_name: str, target_dir: str) -> str:
-    # create build folder if not exists
     if not os.path.exists(target_dir):
         os.mkdir(target_dir)
     # create a ZipFile object
