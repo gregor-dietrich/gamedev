@@ -83,6 +83,7 @@ playerSpeak = function(scene, text, duration = 5000, fadeInSpeed = 1000, fadeOut
 
 playerPause = function(scene) {
     scene.pauseGame();
+    scene.pauseSound.play();
 
     var gamePausedText = scene.add.bitmapText(config.width / 2 - 100, 50, "pixelFont", "GAME PAUSED", 48);
     gamePausedText.tint = 0x000000;
@@ -104,6 +105,7 @@ playerPause = function(scene) {
 
         scene.input.on('pointerdown', function(pointer) {
             scene.unpauseGame();
+            scene.unpauseSound.play();
             gamePausedText.destroy();
             unpauseText.destroy();
             scene.input.removeAllListeners();

@@ -79,7 +79,6 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             return;
         }
         this.spottedPlayer = true;
-        this.scene.questionSound.play();
         
         // enemy spotted player
         this.scene.pauseGame();

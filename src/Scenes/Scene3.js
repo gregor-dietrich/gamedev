@@ -91,7 +91,8 @@ class Scene3 extends Phaser.Scene {
         this.gemSound = this.sound.add("audio_gem", sfxConfig);
         this.correctSound = this.sound.add("audio_correct", sfxConfig);
         this.wrongSound = this.sound.add("audio_wrong", sfxConfig);
-        this.questionSound = this.sound.add("audio_question", sfxConfig);
+        this.pauseSound = this.sound.add("audio_pause", sfxConfig);
+        this.unpauseSound = this.sound.add("audio_unpause", sfxConfig);
         this.bgmSound = this.sound.add("audio_bgm", musicConfig);
     }
 

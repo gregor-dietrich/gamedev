@@ -1,5 +1,5 @@
 var languages = ["de", "en", "ph"];
-var audioFiles = ["bgm", "cherry", "correct", "gem", "hurt", "jump", "question", "wrong"];
+var audioFiles = ["bgm", "cherry", "correct", "gem", "hurt", "jump", "pause", "unpause", "wrong"];
 var envImageFiles = ["background", "bush", "middleground", "palm", "pine", "rock", "shrooms", "tree", "tree2"]
 var platformImageFiles = ["grass1", "grass2", "grass3"]
 
