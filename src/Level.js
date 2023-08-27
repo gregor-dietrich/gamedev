@@ -100,6 +100,8 @@ addPlatform = function(scene) {
     decoratePlatform(scene, platform);
     if (scene.platformsSpawned % gameSettings.enemySpawnFrequency == 0) {
         spawnEnemy(scene, platform);
+    } else {
+        spawnItem(scene, platform);
     }
 }
 

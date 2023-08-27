@@ -22,6 +22,7 @@ class Scene3 extends Phaser.Scene {
 
         this.props = this.physics.add.group();
         this.enemies = this.physics.add.group();
+        this.items = this.physics.add.group();
         this.platformPool = this.add.group();
 
         this.createSounds();
@@ -33,6 +34,13 @@ class Scene3 extends Phaser.Scene {
         addPlatform(this);
 
         addRandomProps(this, 0, 50, 10, ["bush"]);
+
+        /* this.physics.add.collider(this.player, this.items, function(player, item) {
+            item.pickedUp(player);
+        }); */
+        this.physics.add.overlap(this.player, this.items, function(player, item) {
+            item.pickedUp(player);
+        });
     }
 
     update() {
@@ -81,6 +89,12 @@ class Scene3 extends Phaser.Scene {
         for (var i = 0; i < this.enemies.getChildren().length; i++) {
             var enemy = this.enemies.getChildren()[i];
             enemy.update();
+        }
+
+        // update items
+        for (var i = 0; i < this.items.getChildren().length; i++) {
+            var item = this.items.getChildren()[i];
+            item.update();
         }
     }
 
@@ -216,9 +230,10 @@ class Scene3 extends Phaser.Scene {
 
         for (var i = 0; i < this.platformPool.getChildren().length; i++) {
             this.platformPool.getChildren()[i].setVelocityX(0);
-        }    
+        }
         this.props.setVelocityX(0);
         this.enemies.setVelocityX(0);
+        this.items.setVelocityX(0);
 
         this.player.play("player-idle_anim");
     }
@@ -232,6 +247,7 @@ class Scene3 extends Phaser.Scene {
         }
         this.props.setVelocityX(-gameSettings.playerSpeed * 200);
         this.enemies.setVelocityX(-gameSettings.playerSpeed * 200);
+        this.items.setVelocityX(-gameSettings.playerSpeed * 200);
         
         this.player.play("player-run_anim");
     }

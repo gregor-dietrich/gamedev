@@ -1,7 +1,6 @@
 // TO DO: 
 // Improve visual presentation of questions further
 // Add spike traps 50% chance of appearing if platform is longer than 30 blocks
-// Add items, 50% chance of appearing for every 10 blocks of platform length
 // Add background music intro before the loop
 // Add more props
 // Improve decoration of platforms
@@ -23,11 +22,12 @@ var gameSettings = {
     // level generation
     platformLengthMin: 20,
     platformLengthMax: 50,
-    platformGapMin: 120,
+    platformGapMin: 130,
     platformGapMax: 240,
     propDensity: 1,
     enemySpawnFrequency: 5, // every Nth platform
     enemySpawnChance: 100, // in percent
+    itemSpawnChance: 50, // in percent, but only if no enemy
     // misc
     fps: 10 // spritesheet fps
 }

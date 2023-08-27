@@ -41,6 +41,7 @@ class Scene1 extends Phaser.Scene {
         this.loadSpritesheet("enemy", "possum", 36, 28);
 
         // Items
+        this.loadSpritesheet("item", "pickup-fx", 40, 41);
         this.loadSpritesheet("item", "cherry", 21, 21);
         this.loadSpritesheet("item", "gem", 15, 13);
     }
@@ -51,6 +52,13 @@ class Scene1 extends Phaser.Scene {
         // this.scene.start("playGame");
 
         // Animations
+        this.anims.create({
+            key: "item-pickup-fx_anim",
+            frames: this.anims.generateFrameNumbers("item-pickup-fx"),
+            frameRate: gameSettings.fps,
+            repeat: 0,
+            hideOnComplete: true
+        });
         this.createAnimations("item", ["cherry", "gem"], gameSettings.fps, -1);
         this.createAnimations("player", ["idle", "run"], gameSettings.fps, -1);
         this.createAnimations("player", ["jump"], gameSettings.fps / 4, 0);
@@ -79,9 +87,9 @@ class Scene1 extends Phaser.Scene {
         });
     }
 
-    createAnimations(prefix, names, frameRate, repeat, shouldHideOnComplete) {
+    createAnimations(prefix, names, frameRate, repeat, shouldHideOnComplete = false) {
         for (var i = 0; i < names.length; i++) {
-            this.createAnimation(prefix, names[i], frameRate, repeat);
+            this.createAnimation(prefix, names[i], frameRate, repeat, shouldHideOnComplete);
         }
     }
 

@@ -239,7 +239,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     leavePlayer(isAnswerCorrect) {
         if (isAnswerCorrect) {
             this.scene.correctSound.play();
-            this.scene.penalty -= gameSettings.questionBonus;            
+            this.scene.penalty -= gameSettings.questionBonus;
         } else {
                 this.scene.wrongSound.play();
                 this.scene.time.delayedCall(1000, () => {                        
