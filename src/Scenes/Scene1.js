@@ -41,7 +41,7 @@ class Scene1 extends Phaser.Scene {
         this.loadSpritesheet("enemy", "possum", 36, 28);
 
         // Items
-        this.loadSpritesheet("item", "pickup-fx", 40, 41);
+        this.loadSpritesheet("item", "pickup-fx", 32, 33);
         this.loadSpritesheet("item", "cherry", 21, 21);
         this.loadSpritesheet("item", "gem", 15, 13);
     }
@@ -55,12 +55,12 @@ class Scene1 extends Phaser.Scene {
         this.anims.create({
             key: "item-pickup-fx_anim",
             frames: this.anims.generateFrameNumbers("item-pickup-fx"),
-            frameRate: gameSettings.fps,
+            frameRate: gameSettings.fps / 2,
             repeat: 0,
             hideOnComplete: true
         });
-        this.createAnimations("item", ["cherry", "gem"], gameSettings.fps, -1);
-        this.createAnimations("player", ["idle", "run"], gameSettings.fps, -1);
+        this.createAnimations("item", ["cherry", "gem"], gameSettings.fps / 2, -1);
+        this.createAnimations("player", ["idle", "run"], gameSettings.fps / 2, -1);
         this.createAnimations("player", ["jump"], gameSettings.fps / 4, 0);
         this.createAnimations("player", ["hurt"], gameSettings.fps * 2, 0);
         this.createAnimations("enemy", ["eagle", "frog-idle", "frog-jump", "possum"], gameSettings.fps / 2, -1);
