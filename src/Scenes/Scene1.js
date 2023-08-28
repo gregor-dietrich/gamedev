@@ -1,6 +1,6 @@
 var languages = ["de", "en", "ph"];
 var audioFiles = ["bgm", "cherry", "correct", "gem", "hurt", "jump", "pause", "unpause", "wrong"];
-var envImageFiles = ["background", "bush", "middleground", "palm", "pine", "rock", "shrooms", "tree", "tree2"]
+var envImageFiles = ["background", "bush", "middleground", "palm", "pine", "plant-house", "rock", "shrooms", "straw-house", "tree", "tree2", "tree-house", "wooden-house"]
 var platformImageFiles = ["grass1", "grass2", "grass3"]
 
 class Scene1 extends Phaser.Scene {
@@ -55,7 +55,7 @@ class Scene1 extends Phaser.Scene {
         this.anims.create({
             key: "item-pickup-fx_anim",
             frames: this.anims.generateFrameNumbers("item-pickup-fx"),
-            frameRate: gameSettings.fps / 2,
+            frameRate: gameSettings.fps,
             repeat: 0,
             hideOnComplete: true
         });

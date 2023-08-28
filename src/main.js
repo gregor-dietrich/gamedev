@@ -1,9 +1,7 @@
 // TO DO: 
-// Improve visual presentation of questions further
 // Add background music intro before the loop
-// Add more props
 // Improve decoration of platforms
-// Add arrival at the school
+// Improve visual presentation of questions further
 
 var gameSettings = {
     language: "en",

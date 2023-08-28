@@ -45,6 +45,9 @@ createProp = function(scene, propName, positionX) {
         case "pine":
             positionY -= 130;
             break;
+        case "plant-house":
+            positionY -= 109;
+            break;
         case "rock":
             positionY -= 43;
             break;
@@ -52,11 +55,20 @@ createProp = function(scene, propName, positionX) {
             positionY -= 40;
             scale = 1;
             break;
+        case "straw-house":
+            positionY -= 104;
+            break;
         case "tree":
             positionY -= 102;
             break;
         case "tree2":
             positionY -= 115;
+            break;
+        case "tree-house":
+            positionY -= 140;
+            break;
+        case  "wooden-house":
+            positionY -= 106;
             break;
     }
 
@@ -70,15 +82,17 @@ decoratePlatform = function(scene, platform) {
     var platformLength = platform.getChildren().length;
     var platformX = platform.getChildren()[0].x;
 
+    var maxHouses = gameSettings.propDensity * Math.floor(platformLength / 20);
     var maxBushes = gameSettings.propDensity * Math.floor(platformLength / 10);
-    var maxTrees = gameSettings.propDensity * Math.floor(platformLength / 10);
     var maxRocks = gameSettings.propDensity * Math.floor(platformLength / 15);
+    var maxTrees = gameSettings.propDensity * Math.floor(platformLength / 10);
     var maxShrooms = gameSettings.propDensity * Math.floor(platformLength / 15);
 
+    addRandomProps(scene, platformX, platformLength, maxTrees, ["pine", "palm", "tree", "tree2"]);
+    addRandomProps(scene, platformX, platformLength, maxHouses, ["plant-house", "straw-house", "tree-house", "wooden-house"]);
     addRandomProps(scene, platformX, platformLength, maxBushes, ["bush"]);
     addRandomProps(scene, platformX, platformLength, maxRocks, ["rock"]);
-    addRandomProps(scene, platformX, platformLength, maxTrees, ["pine", "palm", "tree", "tree2"]);
-    addRandomProps(scene, platformX, platformLength, maxShrooms, ["shrooms"]);
+    addRandomProps(scene, platformX, platformLength, maxShrooms, ["shrooms"]);    
     
     scene.props.setVelocityX(scene.gamePaused ? 0 : -gameSettings.playerSpeed * 200);
 }
@@ -108,7 +122,7 @@ addPlatform = function(scene) {
 addRandomProps = function(scene, platformX, platformLength, maxProps, propNames) {
     for (var i = 0; i < Phaser.Math.Between(Math.floor(maxProps/2), maxProps); i++) {
         var propName = propNames[Phaser.Math.Between(0, propNames.length - 1)];
-        var prop = createProp(scene, propName, platformX + Phaser.Math.Between(50, platformLength * 32 - 100));
+        var prop = createProp(scene, propName, platformX + Phaser.Math.Between(100, platformLength * 32 - 100));
         if (Phaser.Math.Between(0, 1) == 1) {
             prop.flipX = true;
         }
@@ -118,23 +132,8 @@ addRandomProps = function(scene, platformX, platformLength, maxProps, propNames)
     
 createFirstPlatform = function(scene) {
     scene.platformPool.add(createPlatform(scene, 70));
-    createProp(scene, "bush", 100);
-    createProp(scene, "bush", 1420);
-    createProp(scene, "bush", 1650);
-    createProp(scene, "bush", 2100);
-    createProp(scene, "pine", 520);
-    createProp(scene, "palm", 310);
-    createProp(scene, "palm", 800);
-    createProp(scene, "palm", 1510);
-    createProp(scene, "palm", 1700);
-    createProp(scene, "tree", 1120);
-    createProp(scene, "tree", 2050);
-    createProp(scene, "tree2", 1310);
-    createProp(scene, "tree2", 2150);
-    createProp(scene, "rock", 710);
-    createProp(scene, "rock", 1750);
-    createProp(scene, "shrooms", 760);
-    createProp(scene, "shrooms", 1700);
+    decoratePlatform(scene, scene.platformPool.getChildren()[0]);
+    
     if (gameSettings.enemySpawnFrequency == 1) {
         spawnEnemy(scene, scene.platformPool.getChildren()[0]);
     }
