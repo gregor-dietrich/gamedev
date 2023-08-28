@@ -1,6 +1,5 @@
 // TO DO: 
 // Improve visual presentation of questions further
-// Add spike traps 50% chance of appearing if platform is longer than 30 blocks
 // Add background music intro before the loop
 // Add more props
 // Improve decoration of platforms
