@@ -1,0 +1,92 @@
+[
+    {
+        "question": "What is the definition of modern geometry?",
+        "correct": "The study of shapes and figures using advanced mathematical techniques",
+        "wrong": [
+            "The study of shapes and figures in ancient civilizations",
+            "The study of shapes and figures in contemporary art",
+            "The study of shapes and figures in literature"
+        ]
+    },
+    {
+        "question": "Which of the following is NOT a fundamental axiom\nof Euclidean geometry?",
+        "correct": "The Axiom of Symmetry",
+        "wrong": [
+            "The Parallel Postulate",
+            "The Axiom of Transitivity",
+            "The Axiom of Reflexivity"
+        ]
+    },
+    {
+        "question": "In Euclidean geometry, what is a \"point\"?",
+        "correct": "A dimensionless location",
+        "wrong": [
+            "A straight line segment",
+            "A two-dimensional shape",
+            "A three-dimensional figure"
+        ]
+    },
+    {
+        "question": "Which geometry is characterized by the statement\n\"The sum of the angles in a triangle is always 180 degrees\"?",
+        "correct": "Euclidean geometry",
+        "wrong": [
+            "Hyperbolic geometry",
+            "Elliptic geometry",
+            "Non-Euclidean geometry"
+        ]
+    },
+    {
+        "question": "Which of the following is an example of a\nnon-Euclidean geometry?",
+        "correct": "Spherical geometry",
+        "wrong": [
+            "Planar geometry",
+            "Linear geometry",
+            "Cubic geometry"
+        ]
+    },
+    {
+        "question": "\"Elements\" by Euclid is a famous work in the\nhistory of geometry. What is its significance?",
+        "correct": "It formalized the axiomatic approach to geometry",
+        "wrong": [
+            "It introduced non-Euclidean geometry",
+            "It focused on modern geometric art",
+            "It described the geometry of ancient civilizations"
+        ]
+    },
+    {
+        "question": "In geometry, what does \"congruence\" refer to?",
+        "correct": "The similarity of shapes and sizes",
+        "wrong": [
+            "The measure of angles",
+            "The study of circles",
+            "The study of straight lines"
+        ]
+    },
+    {
+        "question": "What are geometric transformations?",
+        "correct": "Changes in the properties of geometric shapes",
+        "wrong": [
+            "The study of historical geometric figures",
+            "The process of creating new axioms in geometry",
+            "The study of algebraic equations"
+        ]
+    },
+    {
+        "question": "What is the concept of \"symmetry\" in geometry?",
+        "correct": "A property of figures that remain unchanged under certain transformations",
+        "wrong": [
+            "The study of congruent triangles",
+            "The study of mirror reflections",
+            "The study of geometric inequalities"
+        ]
+    },
+    {
+        "question": "How does modern geometry extend beyond\ntraditional Euclidean geometry?",
+        "correct": "It includes the study of curved spaces and higher dimensions",
+        "wrong": [
+            "It focuses on the study of points and lines only",
+            "It deals exclusively with abstract algebraic concepts",
+            "It explores the history of geometric discoveries"
+        ]
+    }
+]

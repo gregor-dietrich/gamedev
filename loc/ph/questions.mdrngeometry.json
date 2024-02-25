@@ -1,0 +1,92 @@
+[
+    {
+        "question": "Ano ang kahulugan ng modernong geometriya?",
+        "correct": "Ang pag-aaral ng mga hugis at anyo sa pamamagitan ng advanced na math",
+        "wrong": [
+        "Ang pag-aaral ng mga hugis at anyo sa sinaunang sibilisasyon",
+        "Ang pag-aaral ng mga hugis at anyo sa makabagong sining",
+        "Ang pag-aaral ng mga hugis at anyo sa panitikan"
+        ]
+    },
+    {
+        "question": "Alin sa mga sumusunod ay HINDI isang\npangunahing aksioma ng Euclidean geometriya?",
+        "correct": "Ang Aksioma ng Simetriya",
+        "wrong": [
+            "Ang Parallel Postulate",
+            "Ang Aksioma ng Transitividad",
+            "Ang Aksioma ng Reflexividad"
+        ]
+    },
+    {
+        "question": "Sa Euclidean geometriya, ano ang ibig sabihin ng \"punto\"?",
+        "correct": "Isang lokasyon na walang dimensyon",
+        "wrong": [
+            "Isang tuwid na bahagi ng linya",
+            "Isang dalawang-dimensyonal na hugis",
+            "Isang tatlong-dimensyonal na anyo"
+        ]
+    },
+    {
+        "question": "Anong geometriya ang nagpapahayag na \"Ang laki ng\nmga anggulo sa triangle ay palaging 180 degrees\"?",
+        "correct": "Euclidean geometriya",
+        "wrong": [
+            "Hyperbolic geometriya",
+            "Elliptic geometriya",
+            "Non-Euclidean geometriya"
+        ]
+    },
+    {
+        "question": "Alin sa mga sumusunod ay isang halimbawa ng\nnon-Euclidean geometriya?",
+        "correct": "Spherical geometriya",
+        "wrong": [
+            "Planar geometriya",
+            "Linear geometriya",
+            "Cubic geometriya"
+        ]
+    },
+    {
+        "question": "Ang \"Elements\" ni Euclid ay isang tanyag na akda sa\nkasaysayan ng geometriya. Ano ang kahalagahan nito?",
+        "correct": "Ito ay nagpormalisa ng axiomatic na paraan sa geometriya",
+        "wrong": [
+            "Ito ay nagpakilala ng non-Euclidean geometriya",
+            "Ito ay nakatuon sa modernong sining ng geometriya",
+            "Ito ay naglalarawan ng geometriya ng sinaunang sibilisasyon"
+        ]
+    },
+    {
+        "question": "Sa geometriya, ano ang tinutukoy ng \"kongruensya\"?",
+        "correct": "Ang pagkakapareho ng hugis at laki",
+        "wrong": [
+            "Ang pagsusukat ng mga anggulo",
+            "Ang pag-aaral ng mga bilog",
+            "Ang pag-aaral ng mga tuwid na linya"
+        ]
+    },
+    {
+        "question": "Ano ang mga geometriyang transformations?",
+        "correct": "Mga pagbabago sa mga katangian ng mga hugis sa geometriya",
+        "wrong": [
+            "Ang pag-aaral ng mga makasaysayang hugis sa geometriya",
+            "Ang proseso ng paglikha ng mga bagong aksioma sa geometriya",
+            "Ang pag-aaral ng mga algebraic equations"
+        ]
+    },
+    {
+        "question": "Ano ang konsepto ng \"simetriya\" sa geometriya?",
+        "correct": "Katangian ng mga hugis na hindi nagbabago sa mga transformations",
+        "wrong": [
+            "Ang pag-aaral ng mga kongruenteng mga triangle",
+            "Ang pag-aaral ng mga salamin na refleksyon",
+            "Ang pag-aaral ng mga geometrikong hindi pagkakapareho"
+        ]
+    },
+    {
+        "question": "Paano lumalampas ang modernong geometriya\nsa tradisyonal na Euclidean geometriya?",
+        "correct": "Ito ay pag-aaral ng kurbadong espasyo at mas mataas na dimensyon",
+        "wrong": [
+            "Ito ay nakatuon sa pag-aaral ng mga punto at linya lamang",
+            "Ito ay sumasaklaw lamang sa mga abstraktong konsepto ng algebra",
+            "Ito ay sumusuri sa kasaysayan ng mga geometrikong pag-alam"
+        ]
+    }      
+]

@@ -1,7 +1,9 @@
 var languages = ["de", "en", "ph"];
+var topics = ["mdrngeometry", "inventory", "trigonometry"];
 var audioFiles = ["bgm", "cherry", "correct", "gem", "hurt", "jump", "pause", "unpause", "wrong"];
 var envImageFiles = ["background", "bush", "middleground", "palm", "pine", "plant-house", "rock", "shrooms", "straw-house", "tree", "tree2", "tree-house", "wooden-house"]
 var platformImageFiles = ["grass1", "grass2", "grass3"]
+var uiImageFiles = ["arrow", "start"]
 
 class Scene1 extends Phaser.Scene {
     constructor() {
@@ -11,8 +13,10 @@ class Scene1 extends Phaser.Scene {
     preload() {
         // Localization
         for (var i = 0; i < languages.length; i++) {
-            this.load.json("questions_" + languages[i], "loc/" + languages[i] + "/questions.json");
             this.loadImage("flags", languages[i]);
+            for (var j = 0; j < topics.length; j++) {
+                this.load.json("questions_" + topics[j] + "_" + languages[i], "loc/" + languages[i] + "/questions." + topics[j] +".json");
+            }
         }
 
         // Font
@@ -30,6 +34,10 @@ class Scene1 extends Phaser.Scene {
         // Platforms
         for (var i = 0; i < platformImageFiles.length; i++) {
             this.loadImage("platforms", platformImageFiles[i]);
+        }
+        // UI        
+        for (var i = 0; i < uiImageFiles.length; i++) {
+            this.loadImage("ui", uiImageFiles[i]);
         }
 
         // Player
@@ -60,10 +68,10 @@ class Scene1 extends Phaser.Scene {
             hideOnComplete: true
         });
         this.createAnimations("item", ["cherry", "gem"], gameSettings.fps / 2, -1);
-        this.createAnimations("player", ["idle", "run"], gameSettings.fps / 2, -1);
+        this.createAnimations("player", ["idle", "run"], gameSettings.fps, -1);
         this.createAnimations("player", ["jump"], gameSettings.fps / 4, 0);
         this.createAnimations("player", ["hurt"], gameSettings.fps * 2, 0);
-        this.createAnimations("enemy", ["eagle", "frog-idle", "frog-jump", "possum"], gameSettings.fps / 2, -1);
+        this.createAnimations("enemy", ["eagle", "frog-idle", "frog-jump", "possum"], gameSettings.fps, -1);
     }
 
     loadAudio(name) {

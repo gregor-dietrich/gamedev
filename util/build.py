@@ -1,6 +1,6 @@
 PROJECTROOT: str = ""
 PROJECTNAME: str = "Mathrunner"
-AUTHOR: str = "Gigabrain Studios"
+AUTHOR: str = "Jessa Montero Dela Peña"
 LAUNCH: bool = False
 PACKAGE: bool = False
 DEBUG: bool = False # if False, JavaScript will be minified

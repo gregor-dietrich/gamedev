@@ -1,0 +1,92 @@
+[
+    {
+        "question": "Was ist die Definition der modernen Geometrie?",
+        "correct": "Die Untersuchung von Formen und Figuren mit fortgeschrittenen Methoden",
+        "wrong": [
+            "Die Untersuchung von Formen und Figuren in antiken Zivilisationen",
+            "Die Untersuchung von Formen und Figuren in zeitgenössischer Kunst",
+            "Die Untersuchung von Formen und Figuren in der Literatur"
+        ]
+    },
+    {
+        "question": "Welche der folgenden Aussagen ist KEIN\ngrundlegendes Axiom in der euklidischen Geometrie?",
+        "correct": "Das Axiom der Symmetrie",
+        "wrong": [
+            "Das Parallelpostulat",
+            "Das Axiom der Transitivität",
+            "Das Axiom der Reflexivität"
+        ]
+    },
+    {
+        "question": "Was ist ein \"Punkt\" in der euklidischen Geometrie?",
+        "correct": "Ein Ort ohne Dimension",
+        "wrong": [
+            "Ein gerader Linienabschnitt",
+            "Eine zweidimensionale Form",
+            "Eine dreidimensionale Figur"
+        ]
+    },
+    {
+        "question": "Was wird durch die Aussage \"Die Innenwinkelsumme\neines Dreiecks beträgt immer 180 Grad\" charakterisiert?",
+        "correct": "Euklidische Geometrie",
+        "wrong": [
+            "Hyperbolische Geometrie",
+            "Elliptische Geometrie",
+            "Nicht-euklidische Geometrie"
+        ]
+    },
+    {
+        "question": "Welches der folgenden ist ein Beispiel für eine\nnicht-euklidische Geometrie?",
+        "correct": "Sphärische Geometrie",
+        "wrong": [
+            "Planare Geometrie",
+            "Lineare Geometrie",
+            "Kubische Geometrie"
+        ]
+    },
+    {
+        "question": "\"Die Elemente\" von Euklid ist ein berühmtes Werk in der\nGeschichte der Geometrie. Welche Bedeutung hat es?",
+        "correct": "Es formalisierte den axiomatischen Ansatz in der Geometrie",
+        "wrong": [
+            "Es führte die nicht-euklidische Geometrie ein",
+            "Es konzentrierte sich auf moderne geometrische Kunst",
+            "Es beschrieb die Geometrie der antiken Zivilisationen"
+        ]
+    },
+    {
+        "question": "Worauf bezieht sich \"Kongruenz\" in der Geometrie?",
+        "correct": "Die Ähnlichkeit von Formen und Größen",
+        "wrong": [
+            "Das Maß von Winkeln",
+            "Die Untersuchung von Kreisen",
+            "Die Untersuchung von geraden Linien"
+        ]
+    },
+    {
+        "question": "Was sind geometrische Transformationen?",
+        "correct": "Veränderungen in den Eigenschaften geometrischer Formen",
+        "wrong": [
+            "Die Untersuchung historischer geometrischer Figuren",
+            "Der Prozess der Schaffung neuer Axiome in der Geometrie",
+            "Die Untersuchung algebraischer Gleichungen"
+        ]
+    },
+    {
+        "question": "Was versteht man in der Geometrie\nunter dem Konzept der \"Symmetrie\"?",
+        "correct": "Eine bei Transformationen unverändert bleibende Eigenschaft von Figuren",
+        "wrong": [
+            "Die Untersuchung von kongruenten Dreiecken",
+            "Die Untersuchung von Spiegelungen",
+            "Die Untersuchung von geometrischen Ungleichheiten"
+        ]
+    },
+    {
+        "question": "Inwiefern geht moderne Geometrie über\n die traditionelle euklidische Geometrie hinaus?",
+        "correct": "Sie umfasst die Untersuchung gekrümmter Räume und höherer Dimensionen",
+        "wrong": [
+            "Sie konzentriert sich auf die Untersuchung von Punkten und Linien",
+            "Sie befasst sich ausschließlich mit abstrakten algebraischen Konzepten",
+            "Sie erforscht die Geschichte geometrischer Entdeckungen"
+        ]
+    }
+]
