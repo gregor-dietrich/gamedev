@@ -1,5 +1,5 @@
 var languages = ["de", "en", "ph"];
-var topics = ["mdrngeometry", "inventory", "trigonometry"];
+var topics = ["mdrngeometry", "trigonometry"];
 var audioFiles = ["bgm", "cherry", "correct", "gem", "hurt", "jump", "pause", "unpause", "wrong"];
 var envImageFiles = ["background", "bush", "middleground", "palm", "pine", "plant-house", "rock", "shrooms", "straw-house", "tree", "tree2", "tree-house", "wooden-house"]
 var platformImageFiles = ["grass1", "grass2", "grass3"]

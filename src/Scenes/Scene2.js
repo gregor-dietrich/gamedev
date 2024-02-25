@@ -38,46 +38,7 @@ class Scene2 extends Phaser.Scene {
     createTitle(yPos) {
         var title = this.add.bitmapText(config.width / 2 - 113, yPos, "pixelFont", "MATH RUNNER", 48);
         title.tint = 0x000000;
-
-        /*
-        var start = this.add.bitmapText(config.width / 2 - 88, yPos + 40, "pixelFont", "Select a language", 24);
-        start.alpha = 0;
-        start.tint = 0x000000;
-
-        this.tweens.add({
-            targets: start,
-            alpha: 1,
-            duration: 1500,
-            ease: 'Power2',
-            yoyo: true,
-            repeat: -1
-        });
-        */
     }
-
-    /* createFlags() {
-        var enFlag = this.add.image(config.width / 2 - 65 + 50, 130, "en").setScale(2);
-        var phFlag = this.add.image(config.width / 2 - 65, 130, "ph").setScale(2);
-        var deFlag = this.add.image(config.width / 2 - 65 + 100, 130, "de").setScale(2);
-        
-        phFlag.setInteractive();
-        phFlag.on("pointerdown", function() {
-            gameSettings.language = "ph";
-            this.scene.start("playGame");
-        }, this);
-
-        enFlag.setInteractive();
-        enFlag.on("pointerdown", function() {
-            gameSettings.language = "en";
-            this.scene.start("playGame");
-        }, this);
-
-        deFlag.setInteractive();
-        deFlag.on("pointerdown", function() {
-            gameSettings.language = "de";
-            this.scene.start("playGame");
-        }, this);
-    } */
 
     createStartButton(yPos) {
         var startButton = this.add.image(config.width / 2, yPos, "start").setScale(0.75);
@@ -166,9 +127,6 @@ class Scene2 extends Phaser.Scene {
         this.nextTopicButton.on("pointerdown", function() {
             switch(gameSettings.topic) {
                 case "mdrngeometry":
-                    gameSettings.topic = "inventory";
-                    break;
-                case "inventory":
                     gameSettings.topic = "trigonometry";
                     break;
                 case "trigonometry":
@@ -184,9 +142,6 @@ class Scene2 extends Phaser.Scene {
                     gameSettings.topic = "trigonometry";
                     break;
                 case "trigonometry":
-                    gameSettings.topic = "inventory";
-                    break;
-                case "inventory":
                     gameSettings.topic = "mdrngeometry";
                     break;
             }
@@ -196,12 +151,6 @@ class Scene2 extends Phaser.Scene {
 
     updateTopicLabel() {
         switch(gameSettings.topic) {
-            case "inventory":
-                this.topicLabel.text = "Inventory";
-                this.topicLabel.x = config.width / 2 - 42;
-                this.nextTopicButton.x = config.width / 2 + 70;
-                this.prevTopicButton.x = config.width / 2 - 68;
-                break;
             case "trigonometry":
                 this.topicLabel.text = "Trigonometry";
                 this.topicLabel.x = config.width / 2 - 59;
